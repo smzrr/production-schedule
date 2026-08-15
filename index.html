@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="SMZRR 2027 Hero Film 제작 로드맵과 AI 영화제 출품 데이터베이스를 한 곳에서 보는 대시보드">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+<title>SMZRR 관제탑</title>
+<style>
+:root{
+  --bg:#f5f2ea;
+  --surface:#ffffff;
+  --surface-alt:#ede8dc;
+  --ink:#211d16;
+  --ink-dim:#655f4f;
+  --ink-faint:#948d78;
+  --border:#ddd5c2;
+  --border-soft:#e8e2d2;
+  --accent:#9c5e18;
+  --accent-ink:#fff7ec;
+  --accent-soft:#f0dfc0;
+  --good:#2f6f45;
+  --good-soft:#dbead9;
+  --warn:#a63b1f;
+  --warn-soft:#f6d9cd;
+  --info:#2a5f7a;
+  --info-soft:#d9e7ee;
+  --muted-soft:#e6e1d4;
+  --shadow:0 1px 2px rgba(33,29,22,.06), 0 8px 24px -12px rgba(33,29,22,.18);
+  --radius:10px;
+  --font-kr:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#17140f;
+    --surface:#221d15;
+    --surface-alt:#2a2318;
+    --ink:#f2ece0;
+    --ink-dim:#c2b8a2;
+    --ink-faint:#8d8571;
+    --border:#3c3323;
+    --border-soft:#2f2819;
+    --accent:#e0a458;
+    --accent-ink:#1c1409;
+    --accent-soft:#3d2c14;
+    --good:#7cc493;
+    --good-soft:#20301f;
+    --warn:#e58362;
+    --warn-soft:#3a231a;
+    --info:#7fb8d6;
+    --info-soft:#1c2f37;
+    --muted-soft:#2c2618;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17140f;
+  --surface:#221d15;
+  --surface-alt:#2a2318;
+  --ink:#f2ece0;
+  --ink-dim:#c2b8a2;
+  --ink-faint:#8d8571;
+  --border:#3c3323;
+  --border-soft:#2f2819;
+  --accent:#e0a458;
+  --accent-ink:#1c1409;
+  --accent-soft:#3d2c14;
+  --good:#7cc493;
+  --good-soft:#20301f;
+  --warn:#e58362;
+  --warn-soft:#3a231a;
+  --info:#7fb8d6;
+  --info-soft:#1c2f37;
+  --muted-soft:#2c2618;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-kr);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent-soft);}
+a{color:var(--accent);}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 20px 80px;}
+
+/* header */
+.topbar{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--border);
+}
+.brand{display:flex;flex-direction:column;gap:4px;}
+.brand-eyebrow{
+  font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+}
+.brand h1{
+  margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em;text-wrap:balance;
+}
+.brand p{margin:0;color:var(--ink-dim);font-size:13.5px;}
+.today-chip{
+  display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);
+  border-radius:999px;padding:8px 14px;font-size:12.5px;color:var(--ink-dim);box-shadow:var(--shadow);
+  white-space:nowrap;
+}
+.today-chip b{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:700;}
+
+/* nav */
+nav.tabs{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px;
+  border-bottom:1px solid var(--border);padding-bottom:0;
+}
+nav.tabs button{
+  appearance:none;border:none;background:transparent;color:var(--ink-dim);
+  font-family:inherit;font-size:13.5px;font-weight:700;padding:10px 14px;cursor:pointer;
+  border-bottom:2px solid transparent;transition:color .15s, border-color .15s;
+  letter-spacing:-.01em;
+}
+nav.tabs button:hover{color:var(--ink);}
+nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent);}
+nav.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+
+.panel{display:none;flex-direction:column;gap:22px;}
+.panel.active{display:flex;}
+
+section.block{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px 22px;box-shadow:var(--shadow);
+}
+.block-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+.block-head h2{margin:0;font-size:16.5px;font-weight:800;letter-spacing:-.01em;}
+.block-head .sub{color:var(--ink-faint);font-size:12px;}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 4px;}
+
+/* KPI cards */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media (max-width:820px){.kpi-row{grid-template-columns:repeat(2,1fr);}}
+.kpi{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px 16px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;
+}
+.kpi .label{font-size:11.5px;color:var(--ink-faint);font-weight:700;letter-spacing:.03em;}
+.kpi .value{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
+.kpi .value small{font-size:13px;font-weight:700;color:var(--ink-dim);}
+.kpi .foot{font-size:12px;color:var(--ink-dim);}
+.kpi.warn .value{color:var(--warn);}
+.kpi.good .value{color:var(--good);}
+.kpi.accent .value{color:var(--accent);}
+
+/* alert banner */
+.alert{
+  display:flex;gap:14px;align-items:flex-start;background:var(--warn-soft);border:1px solid color-mix(in srgb, var(--warn) 35%, var(--border));
+  border-radius:var(--radius);padding:16px 18px;
+}
+.alert .icon{font-size:20px;line-height:1;}
+.alert h3{margin:0 0 4px;font-size:14.5px;font-weight:800;color:var(--warn);}
+.alert p{margin:0 0 10px;font-size:13px;color:var(--ink-dim);}
+.alert-items{display:flex;flex-direction:column;gap:6px;}
+.alert-item{display:flex;align-items:center;gap:8px;font-size:13.5px;flex-wrap:wrap;}
+.alert-item a{font-weight:700;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--warn);}
+.alert-item a:hover{color:var(--warn);}
+
+/* pills / badges */
+.pill{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;
+  font-size:11.5px;font-weight:700;white-space:nowrap;line-height:1.6;
+}
+.pill.good{background:var(--good-soft);color:var(--good);}
+.pill.warn{background:var(--warn-soft);color:var(--warn);}
+.pill.info{background:var(--info-soft);color:var(--info);}
+.pill.muted{background:var(--muted-soft);color:var(--ink-faint);}
+.pill.accent{background:var(--accent-soft);color:var(--accent);}
+.pill.dot::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;}
+.tier{
+  display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:20px;padding:0 6px;
+  border-radius:6px;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;
+}
+.tier.top{background:var(--accent);color:var(--accent-ink);}
+.tier.mid{background:var(--accent-soft);color:var(--accent);}
+.tier.low{background:var(--muted-soft);color:var(--ink-faint);}
+
+/* master timeline strip */
+.gantt{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;}
+.gantt::-webkit-scrollbar{height:7px;}
+.gantt::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;}
+.gantt-item{
+  flex:0 0 auto;min-width:150px;border:1px solid var(--border);border-radius:9px;padding:10px 12px;
+  background:var(--surface-alt);
+}
+.gantt-item .period{font-size:10.5px;color:var(--ink-faint);font-weight:700;font-variant-numeric:tabular-nums;}
+.gantt-item .phase{font-size:13px;font-weight:800;margin:2px 0 4px;letter-spacing:-.01em;}
+.gantt-item .work{font-size:11.5px;color:var(--ink-dim);line-height:1.4;}
+.gantt-item.milestone{background:var(--accent);border-color:var(--accent);}
+.gantt-item.milestone .period,.gantt-item.milestone .work{color:var(--accent-ink);opacity:.85;}
+.gantt-item.milestone .phase{color:var(--accent-ink);}
+
+/* gate cards */
+.gate-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media (max-width:820px){.gate-row{grid-template-columns:repeat(2,1fr);}}
+.gate{border:1px solid var(--border);border-radius:9px;padding:14px;background:var(--surface-alt);}
+.gate .name{font-size:12.5px;font-weight:800;}
+.gate .date{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin:3px 0;letter-spacing:-.01em;}
+.gate .dday{font-size:12px;font-weight:700;}
+
+/* phase detail groups */
+details.phase-group{border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--surface);}
+details.phase-group + details.phase-group{margin-top:8px;}
+details.phase-group summary{
+  cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:12px 14px;
+  font-weight:700;font-size:13.5px;background:var(--surface-alt);
+}
+details.phase-group summary::-webkit-details-marker{display:none;}
+details.phase-group summary::before{content:"▸";color:var(--ink-faint);font-size:11px;transition:transform .15s;}
+details.phase-group[open] summary::before{transform:rotate(90deg);}
+.phase-group summary .name{flex:1;}
+.phase-group summary .range{font-size:11.5px;color:var(--ink-faint);font-weight:600;font-variant-numeric:tabular-nums;}
+.phase-table{width:100%;border-collapse:collapse;font-size:12.8px;}
+.phase-table th{
+  text-align:left;font-size:10.5px;color:var(--ink-faint);font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  padding:8px 12px;border-bottom:1px solid var(--border-soft);
+}
+.phase-table td{padding:9px 12px;border-bottom:1px solid var(--border-soft);vertical-align:top;}
+.phase-table tr:last-child td{border-bottom:none;}
+.step-name{font-weight:700;}
+.step-desc{color:var(--ink-dim);font-size:11.8px;margin-top:2px;line-height:1.45;}
+.dotgroup{display:flex;gap:4px;}
+.dotgroup span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+.dotgroup span.on.c{background:var(--info);}
+.dotgroup span.on.a{background:var(--accent);}
+.dotgroup span.on.p{background:var(--good);}
+.nowrap{white-space:nowrap;}
+
+/* generic table wrap */
+.table-wrap{overflow-x:auto;border:1px solid var(--border-soft);border-radius:9px;}
+table.data{width:100%;border-collapse:collapse;font-size:12.8px;min-width:560px;}
+table.data th{
+  position:sticky;top:0;text-align:left;background:var(--surface-alt);font-size:10.8px;color:var(--ink-faint);
+  font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+table.data td{padding:10px 12px;border-bottom:1px solid var(--border-soft);vertical-align:top;}
+table.data tr:last-child td{border-bottom:none;}
+table.data tr:hover td{background:var(--surface-alt);}
+
+/* scorecard */
+table.score{width:100%;border-collapse:collapse;font-size:13px;}
+table.score th,table.score td{padding:8px 12px;border-bottom:1px solid var(--border-soft);text-align:center;}
+table.score th{font-size:11px;color:var(--ink-faint);font-weight:700;text-align:center;}
+table.score td:first-child,table.score th:first-child{text-align:left;}
+table.score tr:last-child td{font-weight:800;border-bottom:none;}
+
+/* tech level legend */
+.techlvl-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+@media (max-width:900px){.techlvl-row{grid-template-columns:repeat(2,1fr);}}
+.techlvl{border:1px solid var(--border);border-radius:9px;padding:12px;background:var(--surface-alt);}
+.techlvl .badge{
+  display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:6px;
+  background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:12px;margin-bottom:6px;
+}
+.techlvl .def{font-size:12.5px;font-weight:800;margin-bottom:3px;}
+.techlvl .ex{font-size:11.3px;color:var(--ink-dim);line-height:1.4;}
+
+/* calendar */
+.cal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+@media (max-width:980px){.cal-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:640px){.cal-grid{grid-template-columns:1fr;}}
+.cal-month{border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--surface);}
+.cal-month h4{margin:0;padding:9px 10px;background:var(--surface-alt);font-size:12.5px;font-weight:800;text-align:center;letter-spacing:.02em;}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);font-size:9.5px;color:var(--ink-faint);font-weight:700;text-align:center;padding:6px 4px 0;}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:4px 4px 8px;}
+.cal-cell{min-height:44px;border-radius:6px;padding:3px 4px;font-size:10px;background:var(--surface-alt);display:flex;flex-direction:column;gap:2px;}
+.cal-cell.empty{background:transparent;}
+.cal-cell .num{font-weight:700;font-size:10.5px;font-variant-numeric:tabular-nums;color:var(--ink-dim);}
+.cal-cell.today{outline:2px solid var(--accent);outline-offset:-2px;}
+.cal-cell.today .num{color:var(--accent);}
+.cal-chip{border-radius:4px;padding:1px 3px;font-size:8.6px;line-height:1.25;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cal-chip.milestone{background:var(--accent);color:var(--accent-ink);}
+.cal-chip.start{background:var(--info-soft);color:var(--info);}
+.cal-chip.end{background:var(--good-soft);color:var(--good);}
+.cal-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-dim);margin-top:10px;}
+.cal-legend span{display:inline-flex;align-items:center;gap:6px;}
+.cal-legend i{width:9px;height:9px;border-radius:3px;display:inline-block;}
+
+/* controls */
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.search{
+  flex:1;min-width:180px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;
+  background:var(--surface);color:var(--ink);font-family:inherit;font-size:13px;
+}
+.search:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+.chip-btn{
+  appearance:none;border:1px solid var(--border);background:var(--surface);color:var(--ink-dim);
+  font-family:inherit;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px;cursor:pointer;
+}
+.chip-btn.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+.chip-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.count-tag{font-size:11.5px;color:var(--ink-faint);}
+
+/* cards grid (festival db / spec ads) */
+.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media (max-width:880px){.card-grid{grid-template-columns:1fr;}}
+.fcard{border:1px solid var(--border);border-radius:9px;padding:14px 15px;background:var(--surface);display:flex;flex-direction:column;gap:8px;}
+.fcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.fcard-title{font-size:14.5px;font-weight:800;letter-spacing:-.01em;}
+.fcard-loc{font-size:11.5px;color:var(--ink-faint);margin-top:1px;}
+.fcard-stars{font-size:12px;color:var(--accent);white-space:nowrap;}
+.fcard-row{font-size:12.3px;color:var(--ink-dim);display:flex;gap:6px;}
+.fcard-row b{color:var(--ink);font-weight:700;min-width:64px;flex:0 0 auto;}
+.fcard details{margin-top:2px;}
+.fcard details summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--accent);list-style:none;}
+.fcard details summary::-webkit-details-marker{display:none;}
+.fcard details summary::before{content:"자세히 보기 ▾  ";}
+.fcard details[open] summary::before{content:"접기 ▴  ";}
+.fcard-detail{font-size:12.2px;color:var(--ink-dim);line-height:1.55;margin-top:6px;display:flex;flex-direction:column;gap:5px;}
+.fcard-detail div b{color:var(--ink);font-weight:700;}
+.fcard-link{
+  align-self:flex-start;margin-top:2px;font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;
+  border-bottom:1px solid currentColor;
+}
+
+/* stepper */
+.stepper{display:flex;flex-direction:column;}
+.step{display:grid;grid-template-columns:70px 20px 1fr;gap:2px;}
+.step .when{font-size:11.5px;color:var(--ink-faint);font-weight:700;padding-top:2px;font-variant-numeric:tabular-nums;}
+.step .rail{display:flex;flex-direction:column;align-items:center;}
+.step .rail .node{width:11px;height:11px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--accent);margin-top:3px;}
+.step .rail .line{flex:1;width:2px;background:var(--border);margin-top:2px;}
+.step:last-child .rail .line{display:none;}
+.step .body{padding:0 0 20px 12px;}
+.step .body h4{margin:0 0 4px;font-size:13.5px;font-weight:800;}
+.step .body p{margin:2px 0;font-size:12.5px;color:var(--ink-dim);}
+.step .body p b{color:var(--ink);font-weight:700;}
+
+/* today quick table row link */
+.link-btn{
+  font-size:11.5px;font-weight:700;color:var(--accent);text-decoration:none;border:1px solid var(--accent);
+  border-radius:6px;padding:4px 9px;white-space:nowrap;display:inline-block;
+}
+.link-btn:hover{background:var(--accent);color:var(--accent-ink);}
+
+footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border);color:var(--ink-faint);font-size:11.5px;text-align:center;}
+
+@media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <p class="brand-eyebrow">SMZRR STUDIO — AI FILM &amp; SPEC AD</p>
+      <h1>출품 관제탑</h1>
+      <p>2027 Hero Film 제작 로드맵 · AI 영화제 데이터베이스 · 2026 출품 리스트를 한 곳에서</p>
+    </div>
+    <div class="today-chip">📅 오늘 <b id="today-label">—</b></div>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="today" class="active">오늘의 현황</button>
+    <button data-tab="roadmap">제작 로드맵</button>
+    <button data-tab="calendar">월간 캘린더</button>
+    <button data-tab="festivals">페스티벌 DB</button>
+    <button data-tab="strategy">2027 출품 전략</button>
+    <button data-tab="specads">Spec Ad Awards</button>
+    <button data-tab="list2026">2026 출품 리스트</button>
+  </nav>
+
+  <!-- TODAY -->
+  <div class="panel active" id="panel-today"></div>
+  <!-- ROADMAP -->
+  <div class="panel" id="panel-roadmap"></div>
+  <!-- CALENDAR -->
+  <div class="panel" id="panel-calendar"></div>
+  <!-- FESTIVALS -->
+  <div class="panel" id="panel-festivals"></div>
+  <!-- STRATEGY -->
+  <div class="panel" id="panel-strategy"></div>
+  <!-- SPEC ADS -->
+  <div class="panel" id="panel-specads"></div>
+  <!-- LIST 2026 -->
+  <div class="panel" id="panel-list2026"></div>
+
+  <footer>AI_Film_Festival_Master_2027 · AI_영화제_출품_리스트_2026 기반 · 정보 조사 기준일 2026-08-15 · 각 영화제 정확한 요강은 공식 페이지에서 재확인 필요</footer>
+</div>
+
+<script>
+const RESEARCH_DATE = new Date(2026,7,15); // 정보 조사 기준일 — 원본 스프레드시트 작성 시점(고정)
+const TODAY = new Date(); TODAY.setHours(0,0,0,0); // 실제 오늘 날짜 — 매일 자동으로 최신 상태 반영
+
+function dday(dateObj){
+  const d = Math.round((dateObj - TODAY)/86400000);
+  return d;
+}
+function ddayLabel(dateObj){
+  const d = dday(dateObj);
+  if(d===0) return {text:"D-DAY", cls:"warn"};
+  if(d>0) return {text:"D-"+d, cls: d<=7?"warn":(d<=21?"accent":"muted")};
+  return {text:"D+"+Math.abs(d), cls:"muted"};
+}
+function fmtDate(dateObj){
+  const w = ["일","월","화","수","목","금","토"][dateObj.getDay()];
+  return (dateObj.getMonth()+1)+"."+dateObj.getFullYear().toString().slice(2)+"." // unused fallback
+}
+function kDate(dateObj){
+  return dateObj.getFullYear()+"."+String(dateObj.getMonth()+1).padStart(2,"0")+"."+String(dateObj.getDate()).padStart(2,"0");
+}
+
+/* ============ DATA ============ */
+
+// 00_한눈에보는_로드맵 — master timeline strip
+const heroTimeline = [
+ {p:"8월 17~28일", phase:"Concept Development", work:"Scenario Option 1·2·3 개발 → 비교 → 1안 선택"},
+ {p:"8월 31~9월 11일", phase:"Script Development", work:"시나리오 발전 / 세계관 / 캐릭터 / 엔딩 / 러닝타임"},
+ {p:"9월 7~18일", phase:"Technical R&D", work:"어려운 장면 선정 → AI / CG / 실사 구현 테스트"},
+ {p:"9월 14~25일", phase:"Visual Development", work:"Look Dev / 캐릭터 / 공간 / 미술 / 스타일프레임"},
+ {p:"9월 21~30일", phase:"Pre-production", work:"콘티 / Shot List / Animatic / 제작설계"},
+ {p:"10월 1~23일", phase:"Production", work:"AI Generation / 실사촬영 / CG / Asset 제작"},
+ {p:"10월 19~30일", phase:"Edit", work:"Offline v1 → v2 → Picture Lock"},
+ {p:"10월 26~11월 13일", phase:"VFX / 2D", work:"합성 / Roto / Tracking / Cleanup / Graphics"},
+ {p:"11월 2~13일", phase:"Music / Sound", work:"음악 / SFX / Foley / Mix"},
+ {p:"11월 9~18일", phase:"Finishing", work:"Color / Title / 영문자막 / Credit"},
+ {p:"11월 19~25일", phase:"QC", work:"내부 시사 → 수정 → Master"},
+ {p:"11월 말", phase:"MASTER COMPLETE", work:"최종 대표작 완성", milestone:true},
+ {p:"12월", phase:"Festival Package", work:"Poster / Still / Synopsis / Director Statement / AI 제작내역 / Case Film"},
+ {p:"2027년", phase:"Submission", work:"각 영화제 일정에 맞춰 순차 출품"},
+];
+
+const gateDates = [
+ {name:"CONCEPT LOCK", date:new Date(2026,7,28)},
+ {name:"TECH / LOOK LOCK", date:new Date(2026,8,25)},
+ {name:"PICTURE LOCK", date:new Date(2026,9,30)},
+ {name:"MASTER COMPLETE", date:new Date(2026,10,25)},
+];
+
+// 00_2027_HERO_FILM — detailed phase table
+const heroDetail = [
+ {phase:"1. CONCEPT", step:"Scenario Option 1", work:"제작 가능성이 높고 스토리 중심인 안. 로그라인·1p 시놉시스·핵심 장면 8~12개.", start:"08/17", end:"08/21", dur:"1주", gate:"이야기와 엔딩이 한 문장으로 설명됨", tech:"L1", c:1,a:0,p:0, status:"예정"},
+ {phase:"1. CONCEPT", step:"Scenario Option 2", work:"세계관·블랙코미디를 더 과감하게 밀어붙인 안. AI가 아니면 어려운 비주얼 훅 포함.", start:"08/17", end:"08/21", dur:"1주", gate:"Option 1과 완전히 다른 창작적 이유 존재", tech:"L2", c:1,a:1,p:0, status:"예정"},
+ {phase:"1. CONCEPT", step:"Scenario Option 3", work:"AI+실사+CG/2D를 적극 섞는 하이브리드 안. 기술 실험성이 가장 높은 버전.", start:"08/17", end:"08/21", dur:"1주", gate:"기술이 이야기를 잡아먹지 않음", tech:"L3", c:1,a:1,p:0, status:"예정"},
+ {phase:"1. CONCEPT", step:"Concept Review", work:"3개 안을 스토리 35 / 구현가능성 25 / 독창성 20 / Awards 적합도 20으로 평가.", start:"08/24", end:"08/28", dur:"1주", gate:"GO 1안 + Backup 1안 선정", tech:"L1~3", c:1,a:1,p:0, status:"예정"},
+ {phase:"2. SCRIPT", step:"Script Development", work:"선택안의 캐릭터·세계관·갈등·코미디 타이밍·엔딩 발전. 1차→2차→Final Script.", start:"08/31", end:"09/11", dur:"2주", gate:"FINAL SCRIPT LOCK", tech:"L1", c:1,a:0,p:0, status:"예정"},
+ {phase:"2. SCRIPT", step:"Hard Shot Selection", work:"시나리오에서 구현 난이도 최상위 3~5개 장면을 선정해 기술 검증 대상으로 분리.", start:"09/03", end:"09/04", dur:"2일", gate:"Hard Shot List 확정", tech:"L2~4", c:1,a:1,p:0, status:"예정"},
+ {phase:"3. R&D", step:"Technical Breakdown", work:"모든 샷을 실사 / 이미지 생성 / 영상 생성 / 3D·CG / 2D / 로토 / 트래킹 / 립싱크 등으로 분해.", start:"09/07", end:"09/09", dur:"3일", gate:"샷별 구현법·리스크·Fallback 존재", tech:"L1~4", c:0,a:1,p:0, status:"예정"},
+ {phase:"3. R&D", step:"L1 Look Proof", work:"캐릭터·공간·조명·렌즈·질감·컬러 방향의 Style Frame 제작.", start:"09/07", end:"09/11", dur:"1주", gate:"LOOK DIRECTION 승인", tech:"L1", c:1,a:1,p:0, status:"예정"},
+ {phase:"3. R&D", step:"L2 Motion Proof", work:"캐릭터 일관성, 카메라 이동, 액션 연결, 표정·립싱크 테스트.", start:"09/10", end:"09/16", dur:"1주", gate:"주요 Motion Rule 확정", tech:"L2", c:0,a:1,p:0, status:"예정"},
+ {phase:"3. R&D", step:"L3 Composite Proof", work:"AI/실사 소스 결합, Roto·Tracking·Cleanup·Shadow·Light Match 테스트.", start:"09/14", end:"09/18", dur:"1주", gate:"합성 파이프라인 검증", tech:"L3", c:0,a:1,p:1, status:"예정"},
+ {phase:"3. R&D", step:"L4 Hero Shot Proof", work:"가장 어려운 Hero Shot 1~2개를 Final 수준으로 선제 제작.", start:"09/17", end:"09/23", dur:"1주", gate:"Hero Shot 통과 → Production GO", tech:"L4", c:1,a:1,p:1, status:"예정"},
+ {phase:"4. VIS DEV", step:"Visual Bible", work:"캐릭터·의상·소품·세트·공간·그래픽·컬러·렌즈·프롬프트/시드 기록을 하나의 Bible로 정리.", start:"09/14", end:"09/25", dur:"2주", gate:"VISUAL / TECH LOCK", tech:"L2", c:1,a:1,p:0, status:"예정"},
+ {phase:"5. PRE-PRO", step:"Storyboard / Shotlist", work:"Final Script를 컷 단위로 설계. 컷 번호·길이·렌즈·무빙·생성방식까지 명시.", start:"09/21", end:"09/25", dur:"1주", gate:"SHOT LIST LOCK", tech:"L2", c:1,a:1,p:0, status:"예정"},
+ {phase:"5. PRE-PRO", step:"Animatic", work:"Temp VO/TTS·임시 음악·Style Frame으로 전체 영화를 먼저 편집.", start:"09/24", end:"09/30", dur:"1주", gate:"러닝타임·리듬·엔딩 검증", tech:"L1", c:1,a:0,p:1, status:"예정"},
+ {phase:"5. PRE-PRO", step:"Asset Build", work:"캐릭터·배경·소품·그래픽·3D/2D 요소를 본 제작 가능한 형태로 정리.", start:"09/24", end:"09/30", dur:"1주", gate:"Production Asset Ready", tech:"L2", c:1,a:1,p:1, status:"예정"},
+ {phase:"6. PRODUCTION", step:"Generation / Shoot Batch 1", work:"전체 샷 60~70% 확보. 반복 가능한 룰부터 안정화하며 제작.", start:"10/01", end:"10/09", dur:"2주", gate:"Offline 전체를 채울 소스 확보", tech:"L2~3", c:0,a:1,p:0, status:"예정"},
+ {phase:"6. PRODUCTION", step:"Generation / Shoot Batch 2", work:"Hero Shot·복잡한 액션·실패 컷 재작업·대체 Take 확보.", start:"10/12", end:"10/23", dur:"2주", gate:"모든 주요 컷 A/B Take 확보", tech:"L3~4", c:1,a:1,p:1, status:"예정"},
+ {phase:"7. EDIT", step:"Offline v1", work:"스토리·감정·블랙코미디 타이밍 중심 1차 완결 편집.", start:"10/19", end:"10/23", dur:"1주", gate:"내부 시사 가능한 Cut", tech:"L2", c:1,a:0,p:1, status:"예정"},
+ {phase:"7. EDIT", step:"Offline v2 / Pickups", work:"피드백 반영, 컷 교체, 부족한 생성/촬영 Pick-up 진행.", start:"10/26", end:"10/29", dur:"4일", gate:"구조 변경 종료", tech:"L3", c:1,a:1,p:1, status:"예정"},
+ {phase:"7. EDIT", step:"Picture Lock", work:"프레임 단위 편집 확정. 이후 VFX/Music/Sound의 기준본.", start:"10/30", end:"10/30", dur:"1일", gate:"PICTURE LOCK", tech:"L3", c:1,a:0,p:1, status:"예정"},
+ {phase:"8. FINISH", step:"2D / VFX Composite", work:"Roto·Tracking·Cleanup·Matte·Screen·Graphics·Artifact 수정·광원/질감 매칭.", start:"10/26", end:"11/13", dur:"3주", gate:"ALL SHOTS FINAL", tech:"L3~4", c:0,a:1,p:1, status:"예정"},
+ {phase:"8. FINISH", step:"Music", work:"음악 방향→Temp→작곡/라이선스→구조 편집→Final Music. 편집 초기부터 병행.", start:"10/19", end:"11/13", dur:"4주", gate:"Final Music + 권리 정리", tech:"L2", c:1,a:0,p:1, status:"예정"},
+ {phase:"8. FINISH", step:"Sound Design / Mix", work:"Dialogue/VO, Foley, SFX, Ambience, 코미디 타이밍, Final Mix.", start:"11/02", end:"11/16", dur:"2주", gate:"FINAL MIX", tech:"L3", c:1,a:0,p:1, status:"예정"},
+ {phase:"8. FINISH", step:"Color / Look Finish", work:"AI·실사·CG 소스 간 색/질감/콘트라스트 통일. 최종 영화적 룩 확정.", start:"11/09", end:"11/16", dur:"1주", gate:"FINAL COLOR", tech:"L4", c:1,a:0,p:1, status:"예정"},
+ {phase:"8. FINISH", step:"Title / 2D Graphics", work:"오프닝·엔딩 타이틀, 화면 그래픽, 필요한 2D Motion Design.", start:"11/02", end:"11/13", dur:"2주", gate:"Graphic Final", tech:"L2", c:1,a:0,p:1, status:"예정"},
+ {phase:"8. FINISH", step:"KR / EN Subtitle", work:"영문 번역·타이밍·문장 길이·고유명사 검수. KR/EN Master 분리.", start:"11/09", end:"11/18", dur:"2주", gate:"2인 이상 Subtitle QC", tech:"L1", c:1,a:0,p:1, status:"예정"},
+ {phase:"9. MASTER", step:"Credits / AI Disclosure", work:"AI Tool Log, 제작 크레딧, 음악 권리, 사용 에셋, 라이선스, 출품용 AI Statement 정리.", start:"11/12", end:"11/19", dur:"1주", gate:"크레딧·출품폼 정보 일치", tech:"L0", c:0,a:0,p:1, status:"예정"},
+ {phase:"9. MASTER", step:"Internal Screening", work:"팀 내부 시사. 스토리/화질/사운드/자막/AI artifact를 분리해 피드백.", start:"11/19", end:"11/20", dur:"2일", gate:"수정 리스트 LOCK", tech:"L4", c:1,a:1,p:1, status:"예정"},
+ {phase:"9. MASTER", step:"Final Revision / QC", work:"최종 수정, Frame Drop·Artifact·오탈자·음량·Black Frame·Codec/Resolution 검수.", start:"11/20", end:"11/24", dur:"5일", gate:"QC 100% PASS", tech:"L4", c:1,a:1,p:1, status:"예정"},
+ {phase:"9. MASTER", step:"MASTER COMPLETE", work:"Festival Master / Clean Master / Textless / Subtitle / Audio Stem / Archive 제작.", start:"11/25", end:"11/25", dur:"1일", gate:"MASTER ARCHIVE 완료", tech:"L4", c:0,a:0,p:1, status:"예정"},
+ {phase:"10. PACKAGE", step:"Festival Package", work:"Poster, Thumbnail, Stills, Logline, Synopsis, Director Statement, AI Statement, Bio, Credits.", start:"11/26", end:"12/11", dur:"2주", gate:"모든 영화제에 재사용 가능한 Kit", tech:"L1", c:1,a:0,p:1, status:"예정"},
+ {phase:"10. PACKAGE", step:"Case Film / BTS", work:"One Show·D&AD 등을 고려한 제작 과정, AI 활용 방식, 기술적 혁신을 보여주는 Case/BTS 정리.", start:"12/01", end:"12/18", dur:"3주", gate:"Awards용 Case Asset 확보", tech:"L2", c:1,a:1,p:1, status:"예정"},
+ {phase:"10. PACKAGE", step:"2027 Submission Matrix", work:"각 영화제별 카테고리·러닝타임·자격·마감·버전·출품료·필요 문서를 Master와 연결.", start:"12/14", end:"12/23", dur:"2주", gate:"2027 출품 준비 완료", tech:"L0", c:1,a:0,p:1, status:"예정"},
+ {phase:"11. 2027", step:"Submission / Versioning", work:"2027 각 영화제 공고에 맞춰 Master를 재편집하지 않고 규격·자막·Case 중심으로 파생.", start:null, end:null, dur:"연중", gate:"SUBMIT / SCREEN / AWARD / NETWORK", tech:"L0~2", c:1,a:1,p:1, status:"예정"},
+];
+
+const scorecard = [
+ {item:"스토리 / 감정 / 웃음", weight:"35%"},
+ {item:"기술 구현 가능성", weight:"25%"},
+ {item:"독창적 비주얼", weight:"20%"},
+ {item:"Awards 적합도", weight:"20%"},
+];
+
+const techLevels = [
+ {lvl:"L0", def:"관리 / 규격", ex:"출품 규정, Codec, Credits, AI Disclosure, Upload"},
+ {lvl:"L1", def:"LOOK", ex:"Style Frame, 캐릭터/배경 기본 생성, 단순 무빙, Subtitle"},
+ {lvl:"L2", def:"MOTION", ex:"캐릭터 일관성, 카메라 무빙, Action, Lip Sync, Shot Continuity"},
+ {lvl:"L3", def:"COMPOSITE", ex:"실사+AI, Roto, Tracking, Matte, Cleanup, 2D/CG 합성, Light Match"},
+ {lvl:"L4", def:"HERO / FINAL", ex:"최고난도 Hero Shot, Final Composite, Color/Sound 포함 최종 품질 QC"},
+];
+
+// 01_2026-2027_전체달력
+const festivalCalendar = [
+ {year:2026, period:"~ 2/20", fest:"The One Show", type:"Final Deadline", status:"확정", priority:"B", action:"2027 대비용 카테고리/케이스 구조 분석", link:"https://oneshow.org/categories/creative-use-of-ai/"},
+ {year:2026, period:"3월", fest:"WAIFF Seoul", type:"결과/행사", status:"확정", priority:"A", action:"2027 규정 오픈 알림 추적", link:"https://www.worldaifilmfestival.kr/공모-안내"},
+ {year:2026, period:"5월", fest:"D&AD Awards", type:"Shortlist/Pencils", status:"확정", priority:"B", action:"2027용 Film/Craft 사례 분석", link:"https://www.dandad.org/awards/d-ad-awards/categories"},
+ {year:2026, period:"6/2", fest:"Reply AI Film Festival", type:"Submission Deadline", status:"확정", priority:"A", action:"2027 차기 공모 추적", link:"https://challenges.reply.com/challenges/creative/aifilmfestival/home/"},
+ {year:2026, period:"8/31", fest:"AAIFF", type:"Submission Deadline", status:"확정", priority:"A", action:"현재 작품 출품 가능성 즉시 검토", link:"https://aaiff.ai"},
+ {year:2026, period:"9월", fest:"Reply AI Film Festival", type:"Venice Première / Winners", status:"확정", priority:"A", action:"수상작 분석 후 2027 기획 반영", link:"https://challenges.reply.com/challenges/creative/aifilmfestival/home/"},
+ {year:2026, period:"9월", fest:"D&AD Awards", type:"Black Pencil Ceremony", status:"확정", priority:"B", action:"수상작 레퍼런스 수집", link:"https://www.dandad.org/awards/d-ad-awards"},
+ {year:2026, period:"9/15", fest:"AAIFF", type:"Selection", status:"확정", priority:"A", action:"선정 발표 확인", link:"https://aaiff.ai"},
+ {year:2026, period:"10/3", fest:"AAIFF", type:"Festival", status:"확정", priority:"A", action:"결과/수상작 분석", link:"https://aaiff.ai"},
+ {year:2026, period:"4분기~", fest:"WAIFF Seoul 2027", type:"예상 공모 시작 구간", status:"예상", priority:"A", action:"공식 2027 공고 확인", link:"https://www.worldaifilmfestival.kr/공모-안내"},
+ {year:2026, period:"가을~겨울", fest:"The One Show 2027", type:"예상 Entry 오픈", status:"예상", priority:"B", action:"AI_08/10/12 규정 업데이트 확인", link:"https://oneshow.org/categories/creative-use-of-ai/"},
+ {year:2026, period:"11월 전후", fest:"D&AD Awards 2027", type:"예상 Entry 오픈", status:"예상", priority:"B", action:"2027 Entry Guide 확보", link:"https://www.dandad.org/awards/d-ad-awards"},
+ {year:2027, period:"1~2월", fest:"The One Show 2027", type:"예상 마감 시즌", status:"예상", priority:"B", action:"대표작 자격/클라이언트 요건 최종 확인", link:"https://oneshow.org/categories/creative-use-of-ai/"},
+ {year:2027, period:"2월 전후", fest:"WAIFF Seoul 2027", type:"예상 마감", status:"예상", priority:"A", action:"AI 광고/단편 동시 검토", link:"https://www.worldaifilmfestival.kr/공모-안내"},
+ {year:2027, period:"3월 전후", fest:"WAIFF Seoul 2027", type:"예상 결과/행사", status:"예상", priority:"A", action:"수상/상영 일정 대응", link:"https://www.worldaifilmfestival.kr/공모-안내"},
+ {year:2027, period:"5~8월", fest:"AAIFF 2027", type:"예상 접수 시즌", status:"예상", priority:"A", action:"공식 공고 확인 후 Open Competition 준비", link:"https://aaiff.ai"},
+ {year:2027, period:"봄~초여름", fest:"Reply AI Film Festival 2027", type:"예상 접수 시즌", status:"예상", priority:"A", action:"스토리/모큐멘터리형 작품 준비", link:"https://challenges.reply.com/challenges/creative/aifilmfestival/home/"},
+ {year:2027, period:"연중 공지 대기", fest:"Runway AIF 2027", type:"차기 에디션", status:"미발표", priority:"A", action:"Film/Advertising 트랙 최우선 추적", link:"https://aif.runwayml.com"},
+ {year:2027, period:"연중 공지 대기", fest:"Cannes Lions 2027", type:"Awards 일정", status:"미발표", priority:"C", action:"브랜드 캠페인 확보 시 검토", link:"https://www.canneslions.com"},
+ {year:2027, period:"연중 공지 대기", fest:"서울 국제 AI 필름 페스타 2027", type:"차기 공모", status:"미발표", priority:"B", action:"공식 공모 여부 추적", link:"https://seoul-aifesta.com"},
+];
+
+// 02_AI_Festival_Master + 03_AI_Festival_확장DB — merged festival database
+const festivals = [
+ {tier:"A", name:"Runway AIF", character:"AI 크리에이티브 페스티벌", loc:"미국 / NYC·LA", all:"Film / Advertising / Design / New Media / Fashion / Gaming", rec:"Film / Advertising", req:"AI와 예술·기술의 경계를 실험하는 국제 페스티벌. 영화뿐 아니라 광고·디자인·뉴미디어·패션·게임까지 확장.", d2026:"2026 시즌 종료", r2026:"2026 수상작/갈라 완료", d2027:"미발표 · 2026 패턴 기준 추적", fee:"확인 필요", status:"2026 종료", noBrand:"가능", fit:"★★★★★", memo:"2027 오픈 시 최우선 추적. 광고와 영화 양쪽 대표작을 걸 수 있는 핵심 타깃.", link:"https://aif.runwayml.com"},
+ {tier:"A", name:"Reply AI Film Festival", character:"AI 단편영화 경쟁", loc:"이탈리아 / Venice", all:"Compelling Stories / Visual Innovation / Hybrid Creations / Animation & VFX / Advanced Technical Approach / AI-Powered Music Videos / Documentary & Mockumentary 등 전 장르 + Long-Form Spotlight", rec:"Compelling Stories / Hybrid Creations / Documentary & Mockumentary", req:"18세 이상 전 세계 참가. 1~8인 팀, 팀당 1작품. AI가 제작 과정에 포함되면 되고 100% 생성형 AI일 필요 없음. 참가비 무료.", d2026:"마감 2026-06-02 23:59 CEST", r2026:"10 Finalists 발표 완료 · Venice Première 2026-09", d2027:"미발표 · 차기 에디션 공지 추적", fee:"무료", status:"파이널리스트 발표", noBrand:"가능", fit:"★★★★★", memo:"블랙코미디·모큐멘터리·스토리 중심 대표작과 특히 잘 맞음.", link:"https://challenges.reply.com/challenges/creative/aifilmfestival/home/"},
+ {tier:"A", name:"AAIFF — Astana AI Film Festival", character:"AI 영화제", loc:"카자흐스탄 / Astana", all:"Thematic Competition / Open Competition (Best Direction / Best Visual / Best Story / Best Concept)", rec:"Open Competition: Best Direction / Best Story / Best Concept", req:"생성형 AI가 제작의 핵심. 최소 3분, 영어 자막 필수. Open은 완성작 및 타 영화제 출품작도 가능.", d2026:"접수 2026-05-25 ~ 2026-08-31", r2026:"선정 2026-09-15 · 행사 2026-10-03", d2027:"미발표 · 2026 패턴 시 2027년 5~8월 가능성", fee:"무료로 보임*", status:"접수 중", noBrand:"가능", fit:"★★★★★", memo:"현재 가장 즉시성이 높은 타깃. 2027 날짜는 공식 발표 전까지 '예상'으로만 관리.", link:"https://aaiff.ai"},
+ {tier:"A", name:"WAIFF Seoul", character:"AI 영화제", loc:"대한민국 / Seoul", all:"AI 단편영화 / AI 쇼츠 시리즈 / AI 광고 / 청소년 AI 영화", rec:"AI 광고 / AI 단편영화", req:"2026 기준 한국 국적 또는 한국 거주자. 2024-10-01 이후 완성작. AI 프로그램 3개 이상 사용(이미지 생성 1개 이상), 영어 자막 필수. AI 광고는 가상 제품·서비스 광고 가능.", d2026:"접수 2025-10-15 ~ 2026-02-10", r2026:"후보 2026-02 · 결과/행사 2026-03", d2027:"미발표 · 2026 패턴 시 2026년 4분기~2027년 2월 가능성", fee:"확인 필요", status:"2026 종료", noBrand:"가능", fit:"★★★★★", memo:"Spec 광고를 명시적으로 수용하는 점이 매우 중요.", link:"https://www.worldaifilmfestival.kr/공모-안내"},
+ {tier:"B", name:"The One Show — Creative Use of AI", character:"국제 광고 어워드", loc:"미국 / 글로벌", all:"AI_01~AI_12 (Branded AI Campaign / Experience / Craft-Art·Sound·Motion·Storytelling / Creative AI Pioneer / Innovation in AI 등)", rec:"AI_08 AI Craft–Storytelling / AI_10 Pioneer–Organization / AI_12 Innovation in AI", req:"2026 적격기간 2025-01-01~2026-02-20. AI_09~AI_12는 client commission 불필요. 비영어 작품 영어 번역 필요.", d2026:"Super Early ~10-31 · Early ~12-12 · Regular ~2026-01-23 · Extended ~02-06 · Final 2026-02-20", r2026:"2026 시즌 종료", d2027:"미발표 · 통상 전년도 가을 오픈 가능성", fee:"Final $750~$900", status:"2026 종료", noBrand:"조건부 가능", fit:"★★★★☆", memo:"브랜드 없는 작품은 Pioneer/Innovation이 가장 안전한 진입로.", link:"https://oneshow.org/categories/creative-use-of-ai/"},
+ {tier:"B", name:"D&AD Awards", character:"국제 광고·디자인 어워드", loc:"영국 / London", all:"Advertising / Brand / Craft / Culture / Design / Engagement & Experience / Health / Impact 등 약 50개 카테고리. 2026 모든 카테고리에 Use of AI & Technology 하위부문 적용.", rec:"Film + Use of AI & Technology / 관련 Craft + Use of AI & Technology", req:"2026부터 모든 출품에서 AI 사용 공개 의무.", d2026:"Entry site 2025-11-26 오픈", r2026:"Shortlist/Pencils 2026-05 · Black Pencil Ceremony 2026-09", d2027:"미발표 · 2026 패턴 시 2026-11경 오픈 가능성", fee:"카테고리별 상이", status:"2026 종료", noBrand:"조건부", fit:"★★★☆☆", memo:"세부 subcategory가 방대하므로 공식 카테고리 페이지를 원본 기준으로 유지.", link:"https://www.dandad.org/awards/d-ad-awards/categories"},
+ {tier:"C", name:"Cannes Lions", character:"최상위 국제 광고제", loc:"프랑스 / Cannes", all:"Film / Film Craft / Entertainment / Digital Craft / Design / Direct / Media / PR / Social & Creator / Creative Data 등 Lions 체계", rec:"Film Craft의 AI 관련 Craft / 작품 성격에 따라 Film 또는 Entertainment", req:"Creative Brand Lion은 Spec Film용이 아니라 브랜드의 창의적 조직·시스템·역량 평가. 2026 AI Craft 하위부문 신설.", d2026:"2026 시즌 종료", r2026:"Cannes Lions 2026 종료", d2027:"미발표 · 2027 Awards 일정 공식 공지 대기", fee:"카테고리별 상이", status:"2026 종료", noBrand:"대체로 어려움", fit:"★★☆☆☆", memo:"실제 브랜드 캠페인으로 확장된 뒤 훨씬 적합한 장기 목표.", link:"https://www.canneslions.com"},
+ {tier:"B", name:"서울 국제 AI 필름 페스타", character:"AI 영상 공모전/페스타", loc:"대한민국 / Seoul", all:"필름(영상) 콘텐츠 / 뮤직 콘텐츠 / K-브랜드 콘텐츠", rec:"필름(영상) 콘텐츠", req:"생성형 AI 활용. 국가·성별·나이 제한 없음, 개인/팀 가능.", d2026:"2026 공모 미확인", r2026:"2026 일정 미확인", d2027:"미발표 · 2027 공모 여부 추적", fee:"확인 필요", status:"현재 확인 페이지는 2025", noBrand:"필름 부문 가능", fit:"★★★★☆", memo:"2026·2027 공식 공지가 나오면 즉시 업데이트할 항목.", link:"https://seoul-aifesta.com"},
+ {tier:"T2", name:"KAICON AI Film Festival", character:"국내 AI 영화제", loc:"대한민국 / Seoul", all:"Grand Prize / AI Film / AI Advertisement / AI Music Video / AI Director / AI Documentary / Screenplay / Poster 등", rec:"AI Film / AI Advertisement / Best Director / Best Screenplay", req:"생성형 AI를 작품 일부 또는 전체에 의미 있게 사용. AI 도구 크레딧 필수.", d2026:"2026 시즌 종료", r2026:"Selected 5/5 · Nominated 5/11 · Awards 5/16", d2027:"미발표 · 2026 패턴 기준 상반기 추적", fee:"FilmFreeway 기준 확인 필요", status:"2026 시즌 종료", noBrand:"가능", fit:"★★★★★", memo:"국내 수상·Laurel + 광고/연출 부문 동시 공략. AI 사용기록을 제작 단계부터 보관.", link:"https://www.kaicon.kr/"},
+ {tier:"T3", name:"Daejeon International AI Film Festival", character:"중소형 AI 영화제", loc:"대한민국 / Daejeon", all:"AI Narrative Shorts / AI Experimental & New Media / AI Music Videos", rec:"AI Narrative Shorts / AI Experimental & New Media", req:"Narrative 10분 미만. AI 도구 활용. Experimental은 새로운 시각언어/기술실험 중심.", d2026:"3/5 오픈 · 3/19 Earlybird · 4/9 Regular · 4/30 Late · 5/20 Extended", r2026:"6/1 발표 · 7/25 상영", d2027:"미발표 · 2026 패턴 시 3~5월 접수, 7월 행사 예상", fee:"Earlybird 무료 · 이후 $8~20", status:"2026 종료", noBrand:"가능", fit:"★★★★★", memo:"초기 Laurel/선정 + 국내 오프라인 상영. 우수작 최대 10편은 Daejeon Short Film Festival AI Competition fast-track. 트로피는 현장 참석 수상자에게 제공.", link:"https://filmfreeway.com/DaejeonAI"},
+ {tier:"T2", name:"AI Film Festival Japan", character:"아시아 AI 전문 영화제", loc:"일본 / Tokyo", all:"AI Movie / AI Animation / AI Creative (Experimental) / AI Film Music-Score / AI Vocal Track", rec:"AI Movie / AI Creative (Experimental)", req:"90초~15분. 2026 완성작만. AI 도구·모델 상세 공개 필수. 비영어 대사는 영문 자막.", d2026:"7/1 오픈 · 7/31 Earlybird · 8/31 Regular · 9/20 Late", r2026:"10/10 발표 · 11/3 Tokyo 행사", d2027:"미발표 · 2026 패턴 시 7~9월 접수, 11월 행사 예상", fee:"$29→39→49", status:"2026 접수 진행 패턴", noBrand:"가능", fit:"★★★★★", memo:"아시아권 핵심 AI 영화제 + 실제 Tokyo 상영. 기존 감독/작가 스타일 직접 모사 금지, 무단 Voice Clone 금지.", link:"https://filmfreeway.com/AIFilmFestivalJapan2026"},
+ {tier:"T3", name:"AI International Film Festival", character:"다부문 AI/Hybrid 영화제", loc:"미국 / 독립", all:"Best Picture / Best AI Film / AI Feature / AI Short / Music Video / Documentary / Animation / Hybrid AI 등 총 53개", rec:"Best AI Short Film / Best Hybrid AI Short Film / Best Comedy / Best Story / Best Short Director / Best Cinematography", req:"AI 및 Hybrid 카테고리가 매우 세분화. 작품 특성에 따라 다중 카테고리 공략 가능.", d2026:"7/24 오픈 · 7/31 Earlybird · 8/21 Regular", r2026:"10/10 행사(현재 공개 시즌 기준)", d2027:"미발표 · 시즌별/차기 공지 추적", fee:"AI Short $39~49 / AI Film $52~69 등", status:"진행 중 시즌 존재", noBrand:"가능", fit:"★★★★☆", memo:"Laurel Farm + Story/Director/Craft 다중 출품. 카테고리별 비용 누적 가능, 핵심 부문만 선별 추천.", link:"https://filmfreeway.com/AIinternationalFilmFestival"},
+ {tier:"T3", name:"CSFCCA International AI Film Festival", character:"중소형 국제 AI 영화제", loc:"대만 / Taiwan", all:"Best AI Film / Director / Screenplay / Cinematography / Editing / Sound Design / Sci-Fi / Animation / Commercial 등", rec:"Best AI Film / Best AI Director / Best AI Cinematography / Best AI Creative Achievement / Best AI Commercial", req:"AI Film/Director/Craft 다수 3~15분. AI가 전체 제작과정 또는 최종 비주얼의 50% 초과.", d2026:"7/1 오픈 · 9/10 Regular · 9/30 Final", r2026:"10/23 발표 · 11/20 현장 상영/교류", d2027:"미발표 · 2026 패턴 시 7~9월 접수, 11월 행사 예상", fee:"$22~28", status:"2026 접수 진행", noBrand:"가능", fit:"★★★★☆", memo:"Director/Cinematography/Edit/Sound 등 Craft Laurel 축적에 유리. 같은 작품을 여러 Award에 넣으면 각 부문 별도 출품료.", link:"https://filmfreeway.com/CSFCCAAIFilmFestival"},
+ {tier:"T2", name:"AI Film Awards Bali", character:"AI Film & Ads 국제 이벤트", loc:"인도네시아 / Bali", all:"AI Short Film / AI Long Film / AI Animation / AI Ads / AI Video Clip / AI Documentary + Special Awards", rec:"AI Short Film / AI Ad & Commercial / Best Overall Storytelling / Best Experimental", req:"주요 6개 부문은 100% AI-generated 요구. Short 0~5분. Ads: Social 0~1분 / Ads 1~3분 / Commercial <5분.", d2026:"Regular 10/20", r2026:"10/21 발표 · 11/6~8 행사", d2027:"2027 미발표 · 차기 Bali edition 추적", fee:"주요 부문 $30 (Gold $25)", status:"2026 접수 진행", noBrand:"가능", fit:"★★★★☆", memo:"광고형 작품이면 Film과 Ad 양쪽 포지셔닝 가능. 실사 Hybrid Hero Film은 100% AI 조건 때문에 메인 부문 자격 주의, AI-Enhanced 특별상 검토.", link:"https://filmfreeway.com/AIFILMAWARDS-BALI"},
+ {tier:"T2", name:"AI Film Awards Venice", character:"AI Film & Ads 국제 이벤트", loc:"이탈리아 / Venice", all:"AI Short Film / AI Long Film / AI Animation / AI Video Clip / AI Documentary / AI Advertising & Commercial", rec:"AI Advertising & Commercial / AI Short Film / Best Overall Storytelling", req:"메인 Film 부문은 100% AI-generated. Advertising: Social 0~1분 / Advertising 1~3분 / Commercial ≤5분.", d2026:"2026 Regular 시즌 진행", r2026:"9/4~5 Venice 행사 안내", d2027:"2027 미발표 · 차기 Venice edition 추적", fee:"Regular $35 (Gold $30)", status:"2026 접수 진행", noBrand:"가능", fit:"★★★★☆", memo:"AI 광고/Commercial Laurel + Venice 시즌 네트워킹. 페이지 내 100% AI 규정과 hybrid ads 안내가 혼재하므로 2027 제출 전 규정 재확인 필수.", link:"https://filmfreeway.com/venice206"},
+ {tier:"T1", name:"Busan International AI Film Festival (BIAIF)", character:"영화의전당 주최 국제 AI 영화제 / 오프라인 상영 / 비경쟁", loc:"대한민국 / 부산", all:"International Non-Competition (장르·주제·형식 제한 없음) / Audience Award", rec:"International Non-Competition → Official Selection / Audience Award", req:"러닝타임 제한 없음. AI Pure 또는 AI Hybrid 가능. AI를 일부 또는 전체 창작 과정에 활용하고 사용방법 설명 필요. 비영어 대사는 영문자막 필요.", d2026:"2026.07.01 ~ 09.11 23:59 KST", r2026:"선정작 10월 초 발표 / 12.03~12.05 영화의전당 개최", d2027:"미발표 · 2026 패턴 기준 7~9월 접수 / 12월 개최 가능성 추적", fee:"무료", status:"접수 중", noBrand:"가능", fit:"★★★★★", memo:"국내 핵심 AI Film Festival Official Selection + 영화의전당 실제 상영 + GV/네트워킹. 대표작의 연출력·작품성 증명용. 1인/팀당 원칙적으로 1작품.", link:"https://biaif.dureraum.org/main/22"},
+ {tier:"T3", name:"Busan International AI Short Film Awards & Showcase (BIAFA)", character:"월간 온라인 국제 AI 단편영화 어워드 & 쇼케이스", loc:"대한민국 / 부산", all:"Best AI Film / Best Direction / Best Narrative / Best Visual Achievement / Best Sound & Music / Best Use of AI 등", rec:"Best AI Film / Best Direction / Best Narrative / Best Visual Achievement", req:"5~20분. 100% AI 기반 제작 요구. 실사+AI Hybrid는 자격 주의. Full HD 이상, 포스터 및 영어자막 등 최신 규정 확인.", d2026:"월간 접수 방식 / WFCN을 통해 접수 · 시즌별 마감 확인", r2026:"월별 결과 발표 / 온라인 Showcase", d2027:"월간 운영 지속 여부 및 2027 공식 일정 확인 필요", fee:"WFCN 해당 월 출품료 확인 필요", status:"상시 운영", noBrand:"가능", fit:"★★★☆☆~★★★★☆", memo:"Best Direction / Narrative / Visual 등 세부 Laurel 확보용. 100% AI 조건이 핵심이므로 Hybrid Hero Film은 제출 전 자격 재확인.", link:"https://biafa.kr/"},
+];
+
+// 04_2027_출품전략 — submission ladder
+const strategy = [
+ {when:"3~5월", tier:"T3", fest:"Daejeon International AI Film Festival", cat:"AI Narrative Shorts / Experimental", goal:"첫 Official Selection·Laurel 확보", prep:"Festival Master + EN Subs + AI Tool Log"},
+ {when:"상반기", tier:"T2", fest:"KAICON AI Film Festival", cat:"AI Film / AI Advertisement / Director", goal:"국내 수상·광고/연출력 증명", prep:"Film Master + 광고 버전 가능 시 별도 + AI 증빙"},
+ {when:"7~9월", tier:"T2", fest:"AI Film Festival Japan", cat:"AI Movie / AI Creative", goal:"아시아권 국제 Selection", prep:"90초~15분 Master + EN Subs + AI Disclosure"},
+ {when:"7~9월", tier:"T3", fest:"CSFCCA International AI Film Festival", cat:"Film / Director / Cinematography / Creative Achievement", goal:"Craft Laurel 다중 공략", prep:"3~15분 Master + 부문별 Statement"},
+ {when:"여름~가을", tier:"T3", fest:"AI International Film Festival", cat:"AI Short / Hybrid / Comedy / Story / Director", goal:"Story·Director 계열 Laurel", prep:"Master + 선택 부문 2~3개만"},
+ {when:"가을", tier:"T2", fest:"AI Film Awards Venice", cat:"Advertising & Commercial / Short / Storytelling", goal:"AI 광고 타이틀 확보", prep:"1~3분 Ad cut 또는 Film Master"},
+ {when:"가을", tier:"T2", fest:"AI Film Awards Bali", cat:"Short / Ad & Commercial / Experimental", goal:"광고·AI Film 추가 국제 Laurel", prep:"100% AI 버전 여부 사전 판정"},
+ {when:"7~9월", tier:"T1", fest:"BIAIF", cat:"International Non-Competition / Audience Award", goal:"영화의전당 Official Selection·실제 상영·GV/네트워킹", prep:"Festival Master + EN Subs + AI 사용 설명/Disclosure + 상영본"},
+ {when:"수시/월간", tier:"T3", fest:"BIAFA", cat:"Best AI Film / Direction / Narrative / Visual", goal:"Direction·Narrative·Visual 계열 Laurel 확보", prep:"100% AI 자격 확인 + 5~20분 Master + EN Subs + Poster"},
+];
+
+// 06_SPEC_AD_AWARDS
+const specGroups = [
+ {name:"FIRST TARGET", title:"1.4 Awards", sub:"Spec Commercial"},
+ {name:"SECOND TARGET", title:"Berlin Commercial", sub:"Commercial / Personal"},
+ {name:"SUPPORTING", title:"Telly / MUSE", sub:"Self-promotion"},
+ {name:"LONG GAME", title:"Real Campaign →", sub:"D&AD / One Show / Cannes"},
+];
+const specAds = [
+ {tier:"T1", name:"1.4 Awards", character:"신진 디렉터·프로덕션 업계 중심의 상업영상/필름 어워드", specType:"Spec Ad 실제 사례 확인", rec:"In The Making → Commercial / Humour / Personal / Short Film / Animation·CGI", why:"'광고감독으로서 연출력'을 직접 증명하기 좋음. Spec Commercial shortlist 사례가 실제 존재", strategy:"2026 가을~겨울에 60~120초 Hero Spec 제작 → 2027 공모 오픈 즉시 출품", fit:"★★★★★", noBrand:"가능", evidence:"Fujifilm (Spec Ad) / Heart FM (spec ad) shortlist 사례", format:"60~120초 / 강한 Insight / 블랙코미디 / 영화적 연출 / 제품·브랜드가 엔딩에서 의미를 뒤집는 구조", ai:"가능. AI/CG는 이야기와 Craft를 강화하는 수단으로 사용", caution:"실제 브랜드 상표/자산 사용 시 공개·출품 조건과 권리 확인", value:"감독·프로덕션 업계에서의 포지셔닝 강화", priority:"A", link:"https://www.onepointfour.co/awards/"},
+ {tier:"T1", name:"Berlin Commercial", character:"Commercial / Music Video / Personal Project가 섞이는 상업영상·비주얼컬처 플랫폼", specType:"Personal Projects 정식 경쟁", rec:"Commercial Work / Personal Projects / Craft·Film 관련 부문", why:"광고와 영화, 패션, 비주얼 아트의 경계에 있는 작품에 강함. 스튜디오의 색깔을 보여주기 좋음", strategy:"1.4와 동일 Hero Film을 Commercial 또는 Personal Project로 동시 설계", fit:"★★★★★", noBrand:"가능", evidence:"공식적으로 Commercial Work / Music Videos / Personal Projects 구분", format:"60~180초 Hero Film 또는 Spec Commercial / 강한 세계관·비주얼·AI-CG", ai:"가능. AI 자체보다 완성된 연출과 비주얼이 중심", caution:"해당 연도 카테고리와 권리 조건 확인. Personal과 Commercial 중 더 유리한 포지션 선택", value:"스튜디오의 미장센·비주얼 정체성 증명", priority:"A", link:"https://berlincommercial.com/awards"},
+ {tier:"T2", name:"The Telly Awards", character:"광범위한 영상·광고·브랜드 콘텐츠 어워드", specType:"Self-directed creative endeavor 허용", rec:"Commercial & Marketing / Non-Broadcast / Film & Shorts / Self-Promotion 해당 카테고리", why:"SMZRR 자체 광고나 self-directed creative film로 출품하기 쉬움", strategy:"1.4/Berlin 출품 후 추가 award / laurel 확보용", fit:"★★★☆☆", noBrand:"가능", evidence:"client / brand / self-directed creative endeavor 범위 인정", format:"SMZRR self-promo film 또는 Hero Spec의 자체브랜드 버전", ai:"가능", caution:"업계 상징성은 1.4/Berlin보다 낮게 평가", value:"추가 수상 이력·영업 자료 보강", priority:"B", link:"https://www.tellyawards.com/"},
+ {tier:"T2", name:"MUSE Creative Awards", character:"국제 Creative / Design / Video 어워드", specType:"Self-Promotion 사례 존재", rec:"Video → Self-Promotion / Short Film / Craft 관련 부문", why:"자체 브랜드·스튜디오 홍보형 작품에 유연", strategy:"Hero Film을 Self-Promotion / Short Film로 추가 출품", fit:"★★★☆☆", noBrand:"가능", evidence:"Video - Self-Promotion 수상 사례 존재", format:"60~180초 self-promo 또는 독립 short", ai:"가능", caution:"상업영상 업계 내 상징성은 1.4/Berlin보다 낮음", value:"Laurel / 수상 이력 보강", priority:"B", link:"https://museaward.com/"},
+ {tier:"T4", name:"Cannes Lions", character:"최상위 광고제", specType:"Spec / conceptual advertising 첫 타깃 아님", rec:"실제 브랜드 캠페인 이후 Film / Film Craft / Entertainment 등", why:"실제 캠페인으로 전환된 뒤 노릴 장기 목표", strategy:"Spec Hero Film → 브랜드 피칭 → 실제 집행 캠페인 확보 후 재설계", fit:"★☆☆☆☆", noBrand:"대체로 불가", evidence:"Speculative / conceptual advertising 제한", format:"실제 client-approved campaign", ai:"AI 사용 가능하나 실제 캠페인 자격이 핵심", caution:"Spec 작품 자체를 목표로 제작하지 않기", value:"최종 체급 상승", priority:"C", link:"https://www.canneslions.com/"},
+ {tier:"T4", name:"The One Show", character:"최상위 국제 광고 어워드", specType:"Spec work / non-commissioned passion project 첫 타깃 아님", rec:"실제 캠페인 및 해당 자격 카테고리", why:"Spec Hero Film을 실제 브랜드 캠페인으로 전환한 뒤 의미가 커짐", strategy:"2027 이후 실제 client commission 확보 후 검토", fit:"★☆☆☆☆", noBrand:"대체로 불가", evidence:"Spec work / non-commissioned passion project 제한", format:"실제 client campaign", ai:"AI 관련 카테고리도 자격 조건 우선", caution:"Spec의 목적지를 여기로 착각하지 않기", value:"최종 체급 상승", priority:"C", link:"https://oneshow.org/"},
+ {tier:"T4", name:"D&AD Awards", character:"최상위 광고·디자인 어워드", specType:"Self-initiated work 일반적으로 첫 타깃 아님", rec:"Film / Film Craft / Use of AI & Technology 등 실제 자격 부문", why:"실제 브랜드 집행과 강한 Craft가 생긴 뒤 적합", strategy:"Hero Spec → 브랜드 리얼 캠페인 → D&AD", fit:"★☆☆☆☆", noBrand:"대체로 어려움", evidence:"Self-initiated work 제한", format:"실제 캠페인 / client work", ai:"AI disclosure·craft 기준도 함께 대응", caution:"연출·Craft 최고 수준 검증", value:"연출·Craft 최고 수준 검증", priority:"C", link:"https://www.dandad.org/awards/d-ad-awards/"},
+ {tier:"T4", name:"LIA", character:"국제 광고 어워드", specType:"대회 출품 목적으로만 만든 작업은 부적합", rec:"실제 집행된 광고·브랜디드 작업 중심", why:"실제 시장에서 쓰인 캠페인 이후 검토", strategy:"Spec Hero Film을 영업용으로 사용해 실제 client work 확보", fit:"★☆☆☆☆", noBrand:"대체로 어려움", evidence:"Competition-only work 제한", format:"실제 집행 캠페인", ai:"AI 사용보다 자격/실집행이 핵심", caution:"Spec 자체를 LIA용으로 만들지 않기", value:"장기 업계 크레딧", priority:"C", link:"https://www.liaawards.com/"},
+];
+const growthLadder = [
+ {stage:"1", when:"2026 가을", goal:"대표작 기획", work:"Spec Commercial #01", primary:"Insight → Big Idea → Story → AI/CG → Brand Twist", secondary:"-", result:"시나리오 / Visual Bible / Tech Test", next:"1.4 + Berlin 동시 적합성 검토"},
+ {stage:"2", when:"2026 겨울", goal:"Hero Film 완성", work:"60~120초 Spec Commercial", primary:"1.4 Awards", secondary:"Berlin Commercial", result:"Selection / Shortlist / 업계 노출", next:"Telly / MUSE 추가 출품"},
+ {stage:"3", when:"2027", goal:"Selection / Laurel", work:"동일 Master + Festival Version", primary:"1.4 / Berlin", secondary:"Telly / MUSE", result:"Award / Selection / Portfolio", next:"브랜드 담당자에게 직접 피칭"},
+ {stage:"4", when:"2027~", goal:"실제 브랜드 전환", work:"Spec를 근거로 한 실제 Campaign", primary:"Brand / Agency Pitch", secondary:"-", result:"Paid Client / Campaign", next:"실집행 가능한 Case 제작"},
+ {stage:"5", when:"그 다음", goal:"메이저 광고제", work:"실제 집행 Campaign", primary:"D&AD / One Show / Cannes / LIA", secondary:"Film / Craft / Entertainment 등", result:"메이저 Award 자격 확보", next:"스튜디오 체급 상승"},
+];
+const heroFormula = [
+ {part:"Brand / Problem", std:"이야기를 붙이기 좋은 실제 브랜드 또는 SMZRR 자체 브랜드", check:"브랜드가 없어도 작품이 서고, 브랜드가 붙으면 엔딩의 의미가 커지는가?", ai:"실현 불가능한 설정·세계·비주얼을 확장"},
+ {part:"Insight", std:"사람이 실제로 공감할 인간적/사회적 관찰", check:"한 문장으로 설명 가능한가?", ai:"AI가 Insight를 대신하지 않음"},
+ {part:"Big Idea", std:"Insight를 이상한 설정으로 뒤집는 한 문장", check:"포스터 한 장으로 설명 가능한가?", ai:"세계관의 규모를 현실 제작비 이상으로 확장"},
+ {part:"Story", std:"60~120초 안에 Setup → Escalation → Twist", check:"광고라기보다 단편처럼 보이다가 마지막에 브랜드 의미가 잠기는가?", ai:"Hero Shot / impossible visual"},
+ {part:"Tone", std:"Black Comedy + Cinematic", check:"웃긴데 싸 보이지 않는가?", ai:"과한 AI 스타일보다 영화적 통일성"},
+ {part:"Finish", std:"실사/AI/CG/2D를 하나의 촬영본처럼 봉합", check:"AI clip montage처럼 보이지 않는가?", ai:"Composite / cleanup / continuity가 핵심"},
+];
+
+// list2026 — AI_영화제_출품_리스트_2026
+const list2026 = [
+ {name:"Astana AI Film Festival (AAIFF) 2026", country:"카자흐스탄", status:"모집중", sortDate:new Date(2026,7,31), deadline:"2026-08-31", fee:"무료", link:"https://aaiff.ai/#submit", req:"3분 이상, AI 생성 과정이 핵심이어야 함, 유튜브/구글드라이브 업로드", note:"주제 부문 'The Future Worth Living In' + 자유 부문 운영"},
+ {name:"AI Media Award (AMA) Zurich", country:"스위스", status:"모집중", sortDate:new Date(2026,7,31), deadline:"2026-08-31", fee:"50 CHF", link:"https://filmfreeway.com/AIMediaAward", req:"5분 이내, 6개 부문", note:"부문별 우승 상금 약 500 CHF"},
+ {name:"AI.motion Milan", country:"이탈리아", status:"모집중", sortDate:new Date(2026,7,31), deadline:"2026-08-31", fee:"무료", link:"https://filmfreeway.com", req:"밀라노 개최, AI 영상 전반", note:"RAI Cinema Channel Prize 수상 기회"},
+ {name:"Neu Wave AI Film Festival", country:"국제(온라인)", status:"모집중(연장마감)", sortDate:new Date(2026,7,31), deadline:"2026-08-31", fee:"미상", link:"https://filmfreeway.com/aineuwavefilmfestival", req:"AI 생성 영상 전반", note:"Topview 부문 우승 시 $5,000"},
+ {name:"Token AI Film Festival", country:"국제(온라인)", status:"모집중", sortDate:new Date(2026,7,31), deadline:"2026-08-31", fee:"무료", link:"https://filmfreeway.com/TokenAIFilmFestival", req:"AI 생성 영상 전반, 4개 부문", note:"부문별 상금 $250"},
+ {name:"LifeArt AI Film Festival", country:"국제(온라인)", status:"모집중(연장마감)", sortDate:new Date(2026,8,1), deadline:"2026-09-01", fee:"미상", link:"https://www.lifeartfestival.com/ai", req:"장르/경력/국적 제한 없음, 단편·장편·광고·뮤직비디오 등 8개 부문", note:"IMDb 등재 가능, FilmFreeway/FestHome/토우장 3개 플랫폼 접수"},
+ {name:"We Are Human Festival (Call for Films AI)", country:"프랑스(파리)", status:"모집중", sortDate:new Date(2026,8,30), deadline:"2026-09-30", fee:"무료", link:"https://filmfreeway.com/WeAreHumanFestival", req:"18세 이상, 1~10분, 인간·AI 하이브리드 창작 필수(순수 AI 생성만은 제외)", note:"그랑프리 5,000유로, 11월 파리 시상식 + 12월~내년 3월 7개 도시 순회 상영"},
+ {name:"CSFCCA International AI Film Festival", country:"대만(타이베이)", status:"모집중", sortDate:new Date(2026,8,30), deadline:"2026-09-30", fee:"미상", link:"https://filmfreeway.com/CSFCCAAIFilmFestival", req:"AI 생성 영상 전반", note:""},
+ {name:"Disrupt AI Film Festival (DAIFF)", country:"호주", status:"모집중", sortDate:new Date(2026,9,16), deadline:"2026-10-16", fee:"무료", link:"https://filmfreeway.com/DAIFF", req:"AI 생성 영상 전반", note:"총 상금 AU$10,000"},
+ {name:"AI London Film Festival", country:"영국(런던)", status:"모집중", sortDate:new Date(2026,9,16), deadline:"2026-10-16", fee:"$15~25", link:"https://filmfreeway.com", req:"AI 생성 영상 전반", note:"런던 극장 상영 기회"},
+ {name:"Berlin AI Film Festival (2nd Edition)", country:"독일(베를린)", status:"모집중", sortDate:new Date(2026,11,31), deadline:"2026-12-31", fee:"$10~25", link:"https://filmfreeway.com", req:"AI 생성 영상 전반", note:"2027년 2월 상영"},
+ {name:"AI Film Fest Monaco", country:"모나코", status:"모집중", sortDate:new Date(2026,11,31), deadline:"2026-12-31", fee:"무료", link:"https://filmfreeway.com", req:"AI 생성 영상 전반", note:"상금 $10,000"},
+ {name:"01 A.I. New Media", country:"영국", status:"상시 접수(매월)", sortDate:null, deadline:"상시(월 단위 마감)", fee:"미상", link:"https://filmfreeway.com", req:"실험/디지털 아트 성격의 AI 영상", note:"월별 롤링 마감"},
+ {name:"Austin AI Film Festival", country:"미국(오스틴)", status:"마감임박(오늘)", sortDate:new Date(2026,7,15), deadline:"2026-08-15", fee:"$10~25", link:"https://www.austinaifilmfest.com/submission", req:"AI가 대부분의 시각적 장면 제작에 사용, 스토리는 인간 창작 기반", note:"11개 부문, 발표 9/1"},
+ {name:"Bochnia International AI Film Festival (BIAIFF)", country:"폴란드", status:"마감임박(오늘)", sortDate:new Date(2026,7,15), deadline:"2026-08-15", fee:"미상", link:"https://filmfreeway.com", req:"AI 생성 영상 전반", note:"상금 풀 $2,500(그랑프리 $1,200)"},
+ {name:"한국마사회 2026 AI 영상 공모전", country:"대한민국", status:"마감임박(오늘)", sortDate:new Date(2026,7,15), deadline:"2026-08-15", fee:"무료", link:null, req:"국적·연령·성별 제한 없음, AI 활용 단편/숏폼", note:"AI Film·30초 Short-form 2개 부문, 총상금 1,400만원 (FilmFreeway 통해 접수)"},
+ {name:"WAIFF Seoul 2026 (세계 AI 영화제)", country:"대한민국(서울)", status:"마감(참고용)", sortDate:new Date(2026,1,10), deadline:"2026-02-10 (종료)", fee:"-", link:null, req:"-", note:"2026년 접수 이미 종료 — 통상 매년 초 공모, 내년 재공모 예상"},
+ {name:"베이징국제영화제 AIGC 필름 섹션", country:"중국(베이징)", status:"마감(참고용)", sortDate:new Date(2026,2,30), deadline:"2026-03-30 (종료)", fee:"미상", link:"https://lumio.qq.com/bjiff", req:"국적·나이 제한 없음", note:"2026년 접수 종료"},
+ {name:"AIFFI (International Festival for AI-Generated Short Films)", country:"국제(온라인)", status:"마감(참고용)", sortDate:new Date(2026,2,31), deadline:"2026-03-31 (연장마감 종료)", fee:"$16~45", link:"https://filmmakers.festhome.com/en/festival/aiffi-film-festival", req:"AI 관련 주제 또는 AI로 상당 부분 제작", note:"2026년 사이클 종료, 연 1회 반복 개최"},
+ {name:"대한민국AI국제영화제 (K-AIFF)", country:"대한민국", status:"마감(참고용)", sortDate:new Date(2026,3,27), deadline:"2026-04-27 (종료)", fee:"-", link:null, req:"국적·성별·나이 제한 없음", note:"2026년 접수 종료, 경기콘텐츠진흥원 주관, 내년 재공모 예상"},
+ {name:"AI for Good Film Festival", country:"국제(ITU 주관)", status:"마감(참고용)", sortDate:new Date(2026,4,15), deadline:"2026-05-15 (종료)", fee:"미상", link:"https://aiforgood.itu.int/ai-for-good-film-festival/", req:"1~10분, AI가 제작 핵심 요소", note:"2026년 접수 종료"},
+ {name:"제12회 신한 29초영화제(AI 부문 포함)", country:"대한민국", status:"마감(참고용)", sortDate:new Date(2026,4,21), deadline:"2026-05-21 (종료)", fee:"미상", link:"https://www.29sfilm.com", req:"-", note:"2026년 접수 종료, 총상금 4,400만원"},
+ {name:"제1회 미추홀구 AI 영화제", country:"대한민국(인천)", status:"마감(참고용)", sortDate:new Date(2026,4,29), deadline:"2026-05-29 (종료)", fee:"무료", link:null, req:"전 국민(전 연령), 3~5분 AI 활용 영상", note:"2026년 접수 종료"},
+ {name:"GAMFF 2026 (경북 국제 AI·메타버스 영화제)", country:"대한민국(경북)", status:"마감(참고용)", sortDate:null, deadline:"종료(본선 진출작 발표)", fee:"-", link:"https://gamff.com/", req:"-", note:"2026년 접수 종료, 본선 진출작 39편 선정 완료, 본행사 9/3~9/5"},
+];
+
+const legend = [
+ {k:"모집중", v:"오늘(2026-08-15) 기준 출품 접수가 진행 중인 영화제"},
+ {k:"마감임박(오늘)", v:"접수 마감일이 오늘(2026-08-15)인 영화제 — 서둘러 확인 필요"},
+ {k:"상시 접수(매월)", v:"특정 마감일 없이 상시/월 단위로 접수하는 영화제"},
+ {k:"마감(참고용)", v:"2026년 접수가 이미 종료된 영화제 — 내년 일정 참고용"},
+];
+
+/* ============ HELPERS ============ */
+function esc(s){ return (s===null||s===undefined) ? "" : String(s); }
+function linkBtn(url, label){
+  if(!url) return '<span class="count-tag">링크 없음</span>';
+  return '<a class="link-btn" href="'+url+'" target="_blank" rel="noopener">'+(label||"공식 페이지 ↗")+'</a>';
+}
+function statusPillClass(status){
+  if(status.indexOf("마감임박")>=0) return "warn";
+  if(status.indexOf("모집중")>=0) return "good";
+  if(status.indexOf("상시")>=0) return "info";
+  return "muted";
+}
+// 저장된 status 문자열은 원본 조사 시점(2026-08-15) 기준. 실제 오늘 날짜와 마감일을 비교해
+// 시간이 지나도 목록이 계속 정확하도록 상태를 다시 계산한다.
+function liveStatus(f){
+  if(!f.sortDate) return {text:f.status, cls:statusPillClass(f.status)};
+  if(f.status.indexOf("마감(참고용)")>=0) return {text:f.status, cls:"muted"};
+  const diff = Math.round((f.sortDate - TODAY)/86400000);
+  if(diff < 0) return {text:"마감", cls:"muted"};
+  if(diff === 0) return {text:"마감임박(오늘)", cls:"warn"};
+  if(diff <= 7) return {text:"마감임박", cls:"warn"};
+  return {text:f.status, cls:statusPillClass(f.status)};
+}
+function tierClass(t){
+  if(t==="A"||t==="T1") return "top";
+  if(t==="B"||t==="T2") return "mid";
+  return "low";
+}
+
+/* ============ RENDER: TODAY ============ */
+function renderToday(){
+  const urgent = list2026.filter(f=>liveStatus(f).text==="마감임박(오늘)");
+  const openList = list2026.filter(f=>{
+    const t = liveStatus(f).text;
+    return t!=="마감" && t.indexOf("마감(참고용)")<0;
+  }).slice().sort((a,b)=>{
+      if(!a.sortDate) return 1; if(!b.sortDate) return -1;
+      return a.sortDate-b.sortDate;
+    });
+  const nextGate = gateDates.find(g=>g.date>=TODAY) || gateDates[gateDates.length-1];
+  const masterComplete = gateDates.find(g=>g.name==="MASTER COMPLETE");
+
+  let html = "";
+  if(urgent.length){
+    html += '<div class="alert"><div class="icon">⏰</div><div style="flex:1"><h3>오늘 마감되는 영화제 '+urgent.length+'건</h3><p>오늘('+kDate(TODAY)+') 접수 마감입니다. 지금 바로 출품 가능 여부를 확인하세요.</p><div class="alert-items">';
+    urgent.forEach(f=>{
+      html += '<div class="alert-item">▸ '+ (f.link? '<a href="'+f.link+'" target="_blank" rel="noopener">'+esc(f.name)+'</a>' : '<b>'+esc(f.name)+'</b>') +' <span class="pill muted">'+esc(f.country)+'</span> <span class="pill muted">'+esc(f.fee)+'</span></div>';
+    });
+    html += '</div></div></div>';
+  } else {
+    html += '<div class="alert" style="background:var(--good-soft);border-color:color-mix(in srgb, var(--good) 35%, var(--border))"><div class="icon">✅</div><div style="flex:1"><h3 style="color:var(--good)">오늘 마감되는 영화제 없음</h3><p>오늘('+kDate(TODAY)+') 기준으로 급하게 마감되는 항목은 없습니다. 아래 접수 가능 목록을 확인하세요.</p></div></div>';
+  }
+
+  const openCount = openList.length;
+  html += '<div class="kpi-row">';
+  html += '<div class="kpi warn"><div class="label">오늘 마감</div><div class="value">'+urgent.length+'<small> 건</small></div><div class="foot">2026-08-15 접수 종료 기준</div></div>';
+  html += '<div class="kpi good"><div class="label">현재 접수 가능</div><div class="value">'+openCount+'<small> 개 영화제</small></div><div class="foot">모집중 · 마감임박 · 상시접수 합산</div></div>';
+  html += '<div class="kpi accent"><div class="label">다음 제작 게이트</div><div class="value">'+ddayLabel(nextGate.date).text+'</div><div class="foot">'+nextGate.name+' · '+kDate(nextGate.date)+'</div></div>';
+  html += '<div class="kpi accent"><div class="label">MASTER COMPLETE 목표</div><div class="value">'+ddayLabel(masterComplete.date).text+'</div><div class="foot">'+kDate(masterComplete.date)+' · 대표작 최종 완성</div></div>';
+  html += '</div>';
+
+  html += '<section class="block"><div class="block-head"><h2>제작 게이트 타임라인</h2><span class="sub">00_2027_HERO_FILM 기준</span></div><div class="gate-row">';
+  gateDates.forEach(g=>{
+    const dd = ddayLabel(g.date);
+    html += '<div class="gate"><div class="name">'+g.name+'</div><div class="date">'+kDate(g.date)+'</div><div class="dday"><span class="pill '+dd.cls+' dot">'+dd.text+'</span></div></div>';
+  });
+  html += '</div></section>';
+
+  html += '<section class="block"><div class="block-head"><h2>지금 출품 가능한 목록</h2><span class="sub">마감일이 빠른 순 · 전체 목록은 "2026 출품 리스트" 탭</span></div>';
+  html += '<div class="table-wrap"><table class="data"><thead><tr><th>영화제</th><th>국가</th><th>상태</th><th>마감</th><th>D-day</th><th>출품료</th><th></th></tr></thead><tbody>';
+  openList.forEach(f=>{
+    const dd = f.sortDate ? ddayLabel(f.sortDate) : {text:"—",cls:"muted"};
+    const ls = liveStatus(f);
+    html += '<tr><td><b>'+esc(f.name)+'</b></td><td>'+esc(f.country)+'</td><td><span class="pill '+ls.cls+' dot">'+esc(ls.text)+'</span></td><td class="nowrap">'+esc(f.deadline)+'</td><td class="nowrap"><span class="pill '+dd.cls+'">'+dd.text+'</span></td><td class="nowrap">'+esc(f.fee)+'</td><td>'+linkBtn(f.link)+'</td></tr>';
+  });
+  html += '</tbody></table></div></section>';
+
+  document.getElementById("panel-today").innerHTML = html;
+}
+
+/* ============ RENDER: ROADMAP ============ */
+function parseMD(md){
+  if(!md) return null;
+  const m = md.split("/");
+  return new Date(2026, parseInt(m[0],10)-1, parseInt(m[1],10));
+}
+function isMilestoneGate(g){ return /LOCK|COMPLETE|READY/i.test(g||""); }
+
+function renderRoadmap(){
+  let html = "";
+  html += '<section class="block"><div class="block-head"><h2>MASTER PRODUCTION TIMELINE</h2><span class="sub">2026 제작 · 2027 출품 — 전체 흐름 한눈에 보기</span></div>';
+  html += '<div class="gantt">';
+  heroTimeline.forEach(t=>{
+    html += '<div class="gantt-item'+(t.milestone?' milestone':'')+'"><div class="period">'+esc(t.p)+'</div><div class="phase">'+esc(t.phase)+'</div><div class="work">'+esc(t.work)+'</div></div>';
+  });
+  html += '</div></section>';
+
+  // group heroDetail by phase, compute status
+  const phases = [];
+  heroDetail.forEach(r=>{
+    let g = phases.find(p=>p.name===r.phase);
+    if(!g){ g={name:r.phase, rows:[]}; phases.push(g); }
+    g.rows.push(r);
+  });
+  phases.forEach(g=>{
+    let starts=[], ends=[];
+    g.rows.forEach(r=>{
+      const s=parseMD(r.start), e=parseMD(r.end);
+      if(s) starts.push(s); if(e) ends.push(e);
+    });
+    g.start = starts.length? new Date(Math.min(...starts)) : null;
+    g.end = ends.length? new Date(Math.max(...ends)) : null;
+    if(!g.start){ g.state="future"; }
+    else if(TODAY < g.start){ g.state="upcoming"; }
+    else if(g.end && TODAY > g.end){ g.state="done"; }
+    else { g.state="active"; }
+  });
+  let openIdx = phases.findIndex(p=>p.state==="active");
+  if(openIdx<0) openIdx = phases.findIndex(p=>p.state==="upcoming");
+  if(openIdx<0) openIdx = 0;
+
+  html += '<section class="block"><div class="block-head"><h2>PHASE 상세 (전체 27개 작업)</h2><span class="sub">단계를 눌러 펼쳐보세요 · 현재/다음 단계는 기본으로 열려 있습니다</span></div>';
+  phases.forEach((g,i)=>{
+    const rangeTxt = g.start ? (kDate(g.start)+(g.end&&g.end.getTime()!==g.start.getTime() ? " ~ "+kDate(g.end) : "")) : "연중";
+    const stateBadge = g.state==="active" ? '<span class="pill warn dot">진행 예정 구간</span>' : g.state==="upcoming" ? '<span class="pill accent dot">다음 단계</span>' : g.state==="done" ? '<span class="pill muted">완료 예정 지남</span>' : '<span class="pill muted">연중</span>';
+    html += '<details class="phase-group"'+(i===openIdx?' open':'')+'><summary><span class="name">'+esc(g.name)+'</span>'+stateBadge+'<span class="range nowrap">'+rangeTxt+' · '+g.rows.length+'개 작업</span></summary>';
+    html += '<div class="table-wrap"><table class="phase-table"><thead><tr><th>세부 단계</th><th>기간</th><th>Gate / 승인 기준</th><th>Tech</th><th>C/A/P</th><th>상태</th></tr></thead><tbody>';
+    g.rows.forEach(r=>{
+      html += '<tr><td><div class="step-name">'+esc(r.step)+'</div><div class="step-desc">'+esc(r.work)+'</div></td>';
+      html += '<td class="nowrap">'+(r.start? esc(r.start)+' ~ '+esc(r.end) : "연중")+'<br><span class="count-tag">'+esc(r.dur)+'</span></td>';
+      html += '<td>'+esc(r.gate)+'</td>';
+      html += '<td><span class="tier '+tierClass(r.tech.startsWith("L0")||r.tech.startsWith("L1")?"C":"B")+'">'+esc(r.tech)+'</span></td>';
+      html += '<td><div class="dotgroup" title="Creative / AI-VFX / Post"><span class="'+(r.c?'on c':'')+'"></span><span class="'+(r.a?'on a':'')+'"></span><span class="'+(r.p?'on p':'')+'"></span></div></td>';
+      html += '<td><span class="pill muted">'+esc(r.status)+'</span></td></tr>';
+    });
+    html += '</tbody></table></div></details>';
+  });
+  html += '</section>';
+
+  html += '<section class="block"><div class="block-head"><h2>SCENARIO GREENLIGHT SCORECARD</h2><span class="sub">Option 1 / 2 / 3 평가표 — 채점 대기 중</span></div>';
+  html += '<div class="table-wrap"><table class="score"><thead><tr><th>평가 항목</th><th>가중치</th><th>Option 1</th><th>Option 2</th><th>Option 3</th></tr></thead><tbody>';
+  scorecard.forEach(s=>{
+    html += '<tr><td>'+esc(s.item)+'</td><td>'+esc(s.weight)+'</td><td>—</td><td>—</td><td>—</td></tr>';
+  });
+  html += '<tr><td>TOTAL</td><td>100%</td><td>—</td><td>—</td><td>—</td></tr>';
+  html += '</tbody></table></div></section>';
+
+  html += '<section class="block"><div class="block-head"><h2>TECHNICAL LEVEL</h2><span class="sub">구현 난이도 기준</span></div><div class="techlvl-row">';
+  techLevels.forEach(t=>{
+    html += '<div class="techlvl"><div class="badge">'+t.lvl+'</div><div class="def">'+esc(t.def)+'</div><div class="ex">'+esc(t.ex)+'</div></div>';
+  });
+  html += '</div></section>';
+
+  document.getElementById("panel-roadmap").innerHTML = html;
+}
+
+/* ============ RENDER: CALENDAR ============ */
+function buildCalendarEvents(){
+  const evs = {};
+  function add(dateObj, label, type){
+    const key = dateObj.getFullYear()+"-"+String(dateObj.getMonth()+1).padStart(2,"0")+"-"+String(dateObj.getDate()).padStart(2,"0");
+    if(!evs[key]) evs[key]=[];
+    evs[key].push({label:label, type:type});
+  }
+  heroDetail.forEach(r=>{
+    if(!r.start) return;
+    const s = parseMD(r.start), e = parseMD(r.end);
+    add(s, r.step+" 시작", "start");
+    if(e && e.getTime()!==s.getTime()){
+      if(isMilestoneGate(r.gate)) add(e, r.gate, "milestone");
+      else add(e, r.step+" 완료", "end");
+    } else if(isMilestoneGate(r.gate)){
+      evs[s.getFullYear()+"-"+String(s.getMonth()+1).padStart(2,"0")+"-"+String(s.getDate()).padStart(2,"0")][evs[s.getFullYear()+"-"+String(s.getMonth()+1).padStart(2,"0")+"-"+String(s.getDate()).padStart(2,"0")].length-1].type="milestone";
+    }
+  });
+  return evs;
+}
+function renderCalendar(){
+  const events = buildCalendarEvents();
+  const monthNames = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  let html = '<section class="block"><div class="block-head"><h2>2026 제작 캘린더</h2><span class="sub">8월 ~ 12월 · 00_2027_HERO_FILM의 시작/완료/Gate 일정을 자동 반영</span></div>';
+  html += '<div class="cal-grid">';
+  for(let m=7; m<=11; m++){
+    const first = new Date(2026,m,1);
+    const daysInMonth = new Date(2026,m+1,0).getDate();
+    const startDow = first.getDay();
+    html += '<div class="cal-month"><h4>'+monthNames[m]+' 2026</h4><div class="cal-dow"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="cal-days">';
+    for(let i=0;i<startDow;i++) html += '<div class="cal-cell empty"></div>';
+    for(let d=1; d<=daysInMonth; d++){
+      const dateObj = new Date(2026,m,d);
+      const key = dateObj.getFullYear()+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+      const isToday = dateObj.getTime()===TODAY.getTime();
+      html += '<div class="cal-cell'+(isToday?' today':'')+'"><div class="num">'+d+'</div>';
+      (events[key]||[]).slice(0,2).forEach(ev=>{
+        html += '<div class="cal-chip '+ev.type+'" title="'+esc(ev.label)+'">'+esc(ev.label)+'</div>';
+      });
+      if((events[key]||[]).length>2){
+        html += '<div class="cal-chip muted" title="'+ (events[key].slice(2).map(e=>e.label).join(", ")) +'">+'+(events[key].length-2)+'개 더</div>';
+      }
+      html += '</div>';
+    }
+    html += '</div></div>';
+  }
+  html += '</div>';
+  html += '<div class="cal-legend"><span><i style="background:var(--accent)"></i>마일스톤 / Gate</span><span><i style="background:var(--info)"></i>작업 시작</span><span><i style="background:var(--good)"></i>작업 완료</span><span><i style="background:var(--accent);outline:2px solid var(--accent);outline-offset:1px"></i>오늘 (2026-08-15)</span></div>';
+  html += '</section>';
+  document.getElementById("panel-calendar").innerHTML = html;
+}
+
+/* ============ RENDER: FESTIVALS ============ */
+let festState = {q:"", tier:"all"};
+function renderFestivalCard(f){
+  let html = '<div class="fcard"><div class="fcard-top"><div><div class="fcard-title">'+esc(f.name)+'</div><div class="fcard-loc">'+esc(f.loc)+' · '+esc(f.character)+'</div></div><span class="tier '+tierClass(f.tier)+'">'+esc(f.tier)+'</span></div>';
+  html += '<div class="fcard-row"><b>2026 접수</b><span>'+esc(f.d2026)+'</span></div>';
+  html += '<div class="fcard-row"><b>2027 예상</b><span>'+esc(f.d2027)+'</span></div>';
+  html += '<div class="fcard-row"><b>추천 부문</b><span>'+esc(f.rec)+'</span></div>';
+  html += '<div class="fcard-row"><b>적합도</b><span class="fcard-stars">'+esc(f.fit)+'</span> <span class="pill '+(f.noBrand.indexOf("가능")===0?"good":"muted")+'">브랜드 없이 '+esc(f.noBrand)+'</span></div>';
+  html += '<details><summary></summary><div class="fcard-detail">';
+  html += '<div><b>전체 모집부문</b><br>'+esc(f.all)+'</div>';
+  html += '<div><b>핵심 요강</b><br>'+esc(f.req)+'</div>';
+  html += '<div><b>2026 결과/행사</b><br>'+esc(f.r2026)+'</div>';
+  html += '<div><b>출품료</b> '+esc(f.fee)+' · <b>현재 상태</b> '+esc(f.status)+'</div>';
+  html += '<div><b>메모</b><br>'+esc(f.memo)+'</div>';
+  html += '</div></details>';
+  html += linkBtn(f.link);
+  html += '</div>';
+  return html;
+}
+function renderFestivalList(){
+  const q = festState.q.toLowerCase();
+  const filtered = festivals.filter(f=>{
+    if(festState.tier!=="all" && tierClass(f.tier)!==festState.tier) return false;
+    if(q && !(f.name.toLowerCase().indexOf(q)>=0 || f.loc.toLowerCase().indexOf(q)>=0 || f.rec.toLowerCase().indexOf(q)>=0)) return false;
+    return true;
+  });
+  document.getElementById("fest-count").textContent = filtered.length+" / "+festivals.length+"개";
+  document.getElementById("fest-cards").innerHTML = filtered.map(renderFestivalCard).join("");
+}
+function renderFestivals(){
+  let html = '';
+  html += '<section class="block"><div class="block-head"><h2>AI 영화제 &amp; 광고 어워드 데이터베이스</h2><span class="sub">Master DB + 확장 DB 통합 · '+festivals.length+'개 기관</span></div>';
+  html += '<div class="controls"><input class="search" id="fest-search" placeholder="영화제명, 국가, 부문으로 검색…"/>';
+  html += '<button class="chip-btn active" data-tier="all">전체</button><button class="chip-btn" data-tier="top">최우선 (A · T1)</button><button class="chip-btn" data-tier="mid">중요 (B · T2)</button><button class="chip-btn" data-tier="low">기타 (C · T3)</button>';
+  html += '<span class="count-tag" id="fest-count"></span></div>';
+  html += '<div class="card-grid" id="fest-cards"></div></section>';
+
+  html += '<section class="block"><div class="block-head"><h2>2026 → 2027 페스티벌 타임라인</h2><span class="sub">확정/예상 일정 · 우선순위 액션</span></div>';
+  html += '<div class="table-wrap"><table class="data"><thead><tr><th>연도</th><th>시기</th><th>페스티벌</th><th>일정 종류</th><th>확정도</th><th>우선순위</th><th>추천 액션</th><th></th></tr></thead><tbody>';
+  festivalCalendar.forEach(c=>{
+    html += '<tr><td>'+c.year+'</td><td class="nowrap">'+esc(c.period)+'</td><td><b>'+esc(c.fest)+'</b></td><td>'+esc(c.type)+'</td><td><span class="pill '+(c.status==="확정"?"good":c.status==="예상"?"info":"muted")+'">'+esc(c.status)+'</span></td><td><span class="tier '+tierClass(c.priority)+'">'+esc(c.priority)+'</span></td><td>'+esc(c.action)+'</td><td>'+linkBtn(c.link,"↗")+'</td></tr>';
+  });
+  html += '</tbody></table></div></section>';
+
+  document.getElementById("panel-festivals").innerHTML = html;
+  renderFestivalList();
+  document.getElementById("fest-search").addEventListener("input", e=>{ festState.q=e.target.value; renderFestivalList(); });
+  document.querySelectorAll('#panel-festivals [data-tier]').forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll('#panel-festivals [data-tier]').forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active"); festState.tier=btn.dataset.tier; renderFestivalList();
+    });
+  });
+}
+
+/* ============ RENDER: STRATEGY ============ */
+function renderStrategy(){
+  let html = '<section class="block"><div class="block-head"><h2>2027 SUBMISSION LADDER</h2><span class="sub">Hero Film 한 편을 어떻게 순차적으로 돌릴 것인가 — 초기 Selection → Craft/Director Laurel → 국제 AI Festival → Hero Awards</span></div>';
+  html += '<div class="stepper">';
+  strategy.forEach(s=>{
+    html += '<div class="step"><div class="when">'+esc(s.when)+'</div><div class="rail"><div class="node"></div><div class="line"></div></div><div class="body">';
+    html += '<h4>'+esc(s.fest)+' <span class="tier '+tierClass(s.tier)+'">'+esc(s.tier)+'</span></h4>';
+    html += '<p><b>추천 부문</b> '+esc(s.cat)+'</p>';
+    html += '<p><b>목표</b> '+esc(s.goal)+'</p>';
+    html += '<p><b>준비 자료</b> '+esc(s.prep)+'</p>';
+    html += '</div></div>';
+  });
+  html += '</div></section>';
+  document.getElementById("panel-strategy").innerHTML = html;
+}
+
+/* ============ RENDER: SPEC ADS ============ */
+function renderSpecAdCard(f){
+  let html = '<div class="fcard"><div class="fcard-top"><div><div class="fcard-title">'+esc(f.name)+'</div><div class="fcard-loc">'+esc(f.character)+'</div></div><span class="tier '+tierClass(f.tier)+'">'+esc(f.tier)+'</span></div>';
+  html += '<div class="fcard-row"><b>Spec 성격</b><span>'+esc(f.specType)+'</span></div>';
+  html += '<div class="fcard-row"><b>추천 부문</b><span>'+esc(f.rec)+'</span></div>';
+  html += '<div class="fcard-row"><b>적합도</b><span class="fcard-stars">'+esc(f.fit)+'</span> <span class="pill '+(f.noBrand.indexOf("가능")===0?"good":"muted")+'">브랜드 없이 '+esc(f.noBrand)+'</span></div>';
+  html += '<details><summary></summary><div class="fcard-detail">';
+  html += '<div><b>왜 맞는가</b><br>'+esc(f.why)+'</div>';
+  html += '<div><b>2027 전략</b><br>'+esc(f.strategy)+'</div>';
+  html += '<div><b>포맷</b><br>'+esc(f.format)+'</div>';
+  html += '<div><b>AI 사용</b><br>'+esc(f.ai)+'</div>';
+  html += '<div><b>주의사항</b><br>'+esc(f.caution)+'</div>';
+  html += '<div><b>핵심 증거/사례</b><br>'+esc(f.evidence)+'</div>';
+  html += '<div><b>장기 가치</b><br>'+esc(f.value)+'</div>';
+  html += '</div></details>';
+  html += linkBtn(f.link);
+  html += '</div>';
+  return html;
+}
+function renderSpecAds(){
+  let html = '';
+  html += '<section class="block"><div class="block-head"><h2>SPEC COMMERCIAL / NON-AI AWARDS — 2027 ROUTE</h2><span class="sub">AI 영화제뿐 아니라 광고·상업영상 어워드에도 출품 가능한 Hero Spec Commercial 설계</span></div>';
+  html += '<div class="gate-row">';
+  specGroups.forEach(g=>{
+    html += '<div class="gate"><div class="name">'+g.name+'</div><div class="date" style="font-size:15px">'+g.title+'</div><div class="dday" style="color:var(--ink-dim);font-weight:600">'+g.sub+'</div></div>';
+  });
+  html += '</div></section>';
+
+  html += '<section class="block"><div class="block-head"><h2>Award 후보 상세</h2><span class="sub">우선순위 A → C 순</span></div><div class="card-grid">';
+  html += specAds.map(renderSpecAdCard).join("");
+  html += '</div></section>';
+
+  html += '<section class="block"><div class="block-head"><h2>SPEC → REAL CAMPAIGN GROWTH LADDER</h2></div><div class="stepper">';
+  growthLadder.forEach(s=>{
+    html += '<div class="step"><div class="when">Stage '+s.stage+'<br><span class="count-tag">'+esc(s.when)+'</span></div><div class="rail"><div class="node"></div><div class="line"></div></div><div class="body">';
+    html += '<h4>'+esc(s.goal)+'</h4>';
+    html += '<p><b>작품</b> '+esc(s.work)+'</p>';
+    html += '<p><b>Primary</b> '+esc(s.primary)+(s.secondary!=="-"?' · <b>Secondary</b> '+esc(s.secondary):'')+'</p>';
+    html += '<p><b>성과</b> '+esc(s.result)+'</p>';
+    html += '<p><b>다음 액션</b> '+esc(s.next)+'</p>';
+    html += '</div></div>';
+  });
+  html += '</div></section>';
+
+  html += '<section class="block"><div class="block-head"><h2>HERO SPEC FORMULA</h2><span class="sub">우리가 만드는 첫 작품의 기준</span></div>';
+  html += '<div class="table-wrap"><table class="data"><thead><tr><th>구성</th><th>기준</th><th>체크포인트</th><th>AI/CG 역할</th></tr></thead><tbody>';
+  heroFormula.forEach(r=>{
+    html += '<tr><td><b>'+esc(r.part)+'</b></td><td>'+esc(r.std)+'</td><td>'+esc(r.check)+'</td><td>'+esc(r.ai)+'</td></tr>';
+  });
+  html += '</tbody></table></div></section>';
+
+  document.getElementById("panel-specads").innerHTML = html;
+}
+
+/* ============ RENDER: LIST 2026 ============ */
+let listState = {q:"", status:"all"};
+function renderList2026Table(){
+  const q = listState.q.toLowerCase();
+  const filtered = list2026.filter(f=>{
+    const ls = liveStatus(f);
+    if(listState.status!=="all" && ls.text.indexOf(listState.status)<0) return false;
+    if(q && !(f.name.toLowerCase().indexOf(q)>=0 || f.country.toLowerCase().indexOf(q)>=0 || f.req.toLowerCase().indexOf(q)>=0)) return false;
+    return true;
+  }).slice().sort((a,b)=>{
+    if(!a.sortDate && !b.sortDate) return 0;
+    if(!a.sortDate) return 1; if(!b.sortDate) return -1;
+    return a.sortDate-b.sortDate;
+  });
+  document.getElementById("list-count").textContent = filtered.length+" / "+list2026.length+"개";
+  let rows = "";
+  filtered.forEach(f=>{
+    const dd = f.sortDate ? ddayLabel(f.sortDate) : {text:"—",cls:"muted"};
+    const ls = liveStatus(f);
+    rows += '<tr><td><b>'+esc(f.name)+'</b>'+(f.note? '<details><summary></summary><div class="fcard-detail" style="margin-top:4px"><div>'+esc(f.note)+'</div></div></details>':'')+'</td>';
+    rows += '<td class="nowrap">'+esc(f.country)+'</td>';
+    rows += '<td><span class="pill '+ls.cls+' dot">'+esc(ls.text)+'</span></td>';
+    rows += '<td class="nowrap">'+esc(f.deadline)+'</td>';
+    rows += '<td class="nowrap"><span class="pill '+dd.cls+'">'+dd.text+'</span></td>';
+    rows += '<td class="nowrap">'+esc(f.fee)+'</td>';
+    rows += '<td>'+esc(f.req)+'</td>';
+    rows += '<td>'+linkBtn(f.link)+'</td></tr>';
+  });
+  document.getElementById("list-tbody").innerHTML = rows;
+}
+function renderList2026(){
+  let html = '<section class="block"><div class="block-head"><h2>2026년 AI 영화제 출품 가능 목록</h2><span class="sub">상태는 오늘 날짜 기준 자동 계산 · "마감(참고용)"은 원본 조사 시점(2026-08-15)에 이미 종료되어 있던 곳</span></div>';
+  html += '<div class="controls"><input class="search" id="list-search" placeholder="영화제명, 국가, 요건으로 검색…"/>';
+  html += '<button class="chip-btn active" data-status="all">전체</button><button class="chip-btn" data-status="모집중">모집중</button><button class="chip-btn" data-status="마감임박">마감임박</button><button class="chip-btn" data-status="상시">상시접수</button><button class="chip-btn" data-status="마감(참고용)">마감(참고용)</button>';
+  html += '<span class="count-tag" id="list-count"></span></div>';
+  html += '<div class="table-wrap"><table class="data"><thead><tr><th>영화제명</th><th>국가/지역</th><th>상태</th><th>접수 마감일</th><th>D-day</th><th>출품료</th><th>자격요건/특징</th><th></th></tr></thead><tbody id="list-tbody"></tbody></table></div></section>';
+
+  html += '<section class="block"><div class="block-head"><h2>상태 범례</h2></div><div class="card-grid">';
+  legend.forEach(l=>{
+    html += '<div class="fcard-row"><span class="pill '+statusPillClass(l.k)+' dot">'+esc(l.k)+'</span><span>'+esc(l.v)+'</span></div>';
+  });
+  html += '</div></section>';
+
+  document.getElementById("panel-list2026").innerHTML = html;
+  renderList2026Table();
+  document.getElementById("list-search").addEventListener("input", e=>{ listState.q=e.target.value; renderList2026Table(); });
+  document.querySelectorAll('#panel-list2026 [data-status]').forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll('#panel-list2026 [data-status]').forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active"); listState.status=btn.dataset.status; renderList2026Table();
+    });
+  });
+}
+
+/* ============ INIT ============ */
+document.getElementById("today-label").textContent = kDate(TODAY)+" ("+["일","월","화","수","목","금","토"][TODAY.getDay()]+")";
+renderToday();
+renderRoadmap();
+renderCalendar();
+renderFestivals();
+renderStrategy();
+renderSpecAds();
+renderList2026();
+
+document.getElementById("tabs").addEventListener("click", e=>{
+  const btn = e.target.closest("button[data-tab]");
+  if(!btn) return;
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("panel-"+btn.dataset.tab).classList.add("active");
+});
+</script>
+</body>
+</html>
