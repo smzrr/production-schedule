@@ -6,73 +6,75 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="SMZRR 2027 Hero Film 제작 로드맵과 AI 영화제 출품 데이터베이스를 한 곳에서 보는 대시보드">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
-<title>SMZRR 관제탑</title>
+<title>AI 영상 제작 스케줄</title>
 <style>
 :root{
-  --bg:#f5f2ea;
+  --bg:#fbfaff;
   --surface:#ffffff;
-  --surface-alt:#ede8dc;
-  --ink:#211d16;
-  --ink-dim:#655f4f;
-  --ink-faint:#948d78;
-  --border:#ddd5c2;
-  --border-soft:#e8e2d2;
-  --accent:#9c5e18;
-  --accent-ink:#fff7ec;
-  --accent-soft:#f0dfc0;
+  --surface-alt:#f3eefc;
+  --ink:#211b36;
+  --ink-dim:#5b5476;
+  --ink-faint:#948cb0;
+  --border:#e4ddf7;
+  --border-soft:#ede8fa;
+  --accent:#7351c9;
+  --accent-ink:#ffffff;
+  --accent-soft:#e7dffa;
   --good:#2f6f45;
   --good-soft:#dbead9;
   --warn:#a63b1f;
   --warn-soft:#f6d9cd;
   --info:#2a5f7a;
   --info-soft:#d9e7ee;
-  --muted-soft:#e6e1d4;
-  --shadow:0 1px 2px rgba(33,29,22,.06), 0 8px 24px -12px rgba(33,29,22,.18);
+  --muted-soft:#ede8fa;
+  --shadow:0 1px 2px rgba(41,25,82,.07), 0 8px 24px -12px rgba(41,25,82,.2);
   --radius:10px;
+  --accent-gradient:linear-gradient(135deg, #5632B0 0%, #7351C9 40%, #9D7FE6 72%, #B6A0EC 100%);
+  --accent-gradient-h:linear-gradient(90deg, #5632B0 0%, #7351C9 40%, #9D7FE6 72%, #B6A0EC 100%);
   --font-kr:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#17140f;
-    --surface:#221d15;
-    --surface-alt:#2a2318;
-    --ink:#f2ece0;
-    --ink-dim:#c2b8a2;
-    --ink-faint:#8d8571;
-    --border:#3c3323;
-    --border-soft:#2f2819;
-    --accent:#e0a458;
-    --accent-ink:#1c1409;
-    --accent-soft:#3d2c14;
+    --bg:#150f26;
+    --surface:#1f1836;
+    --surface-alt:#271f42;
+    --ink:#f1ecfb;
+    --ink-dim:#c3b8e0;
+    --ink-faint:#8f81b8;
+    --border:#3a2f5c;
+    --border-soft:#2c2549;
+    --accent:#b6a0ec;
+    --accent-ink:#1e1533;
+    --accent-soft:#352a57;
     --good:#7cc493;
     --good-soft:#20301f;
     --warn:#e58362;
     --warn-soft:#3a231a;
     --info:#7fb8d6;
     --info-soft:#1c2f37;
-    --muted-soft:#2c2618;
+    --muted-soft:#2c2549;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#17140f;
-  --surface:#221d15;
-  --surface-alt:#2a2318;
-  --ink:#f2ece0;
-  --ink-dim:#c2b8a2;
-  --ink-faint:#8d8571;
-  --border:#3c3323;
-  --border-soft:#2f2819;
-  --accent:#e0a458;
-  --accent-ink:#1c1409;
-  --accent-soft:#3d2c14;
+  --bg:#150f26;
+  --surface:#1f1836;
+  --surface-alt:#271f42;
+  --ink:#f1ecfb;
+  --ink-dim:#c3b8e0;
+  --ink-faint:#8f81b8;
+  --border:#3a2f5c;
+  --border-soft:#2c2549;
+  --accent:#b6a0ec;
+  --accent-ink:#1e1533;
+  --accent-soft:#352a57;
   --good:#7cc493;
   --good-soft:#20301f;
   --warn:#e58362;
   --warn-soft:#3a231a;
   --info:#7fb8d6;
   --info-soft:#1c2f37;
-  --muted-soft:#2c2618;
+  --muted-soft:#2c2549;
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
 }
 *{box-sizing:border-box;}
@@ -91,14 +93,14 @@ a{color:var(--accent);}
 /* header */
 .topbar{
   display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--border);
+  padding-bottom:20px;margin-bottom:18px;border-bottom:3px solid transparent;border-image:var(--accent-gradient-h) 1;
 }
-.brand{display:flex;flex-direction:column;gap:4px;}
+.brand{display:flex;flex-direction:column;gap:6px;}
 .brand-eyebrow{
   font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
 }
 .brand h1{
-  margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em;text-wrap:balance;
+  margin:0;font-size:clamp(26px, 20px + 2vw, 38px);font-weight:800;letter-spacing:-.02em;text-wrap:balance;color:var(--ink);
 }
 .brand p{margin:0;color:var(--ink-dim);font-size:13.5px;}
 .today-chip{
@@ -120,7 +122,7 @@ nav.tabs button{
   letter-spacing:-.01em;
 }
 nav.tabs button:hover{color:var(--ink);}
-nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent);}
+nav.tabs button.active{color:var(--accent);border-bottom:2px solid transparent;border-image:var(--accent-gradient-h) 1;}
 nav.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
 
 .panel{display:none;flex-direction:column;gap:22px;}
@@ -178,7 +180,7 @@ section.block{
   display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:20px;padding:0 6px;
   border-radius:6px;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;
 }
-.tier.top{background:var(--accent);color:var(--accent-ink);}
+.tier.top{background:var(--accent-gradient);color:#fff;}
 .tier.mid{background:var(--accent-soft);color:var(--accent);}
 .tier.low{background:var(--muted-soft);color:var(--ink-faint);}
 
@@ -193,7 +195,7 @@ section.block{
 .gantt-item .period{font-size:10.5px;color:var(--ink-faint);font-weight:700;font-variant-numeric:tabular-nums;}
 .gantt-item .phase{font-size:13px;font-weight:800;margin:2px 0 4px;letter-spacing:-.01em;}
 .gantt-item .work{font-size:11.5px;color:var(--ink-dim);line-height:1.4;}
-.gantt-item.milestone{background:var(--accent);border-color:var(--accent);}
+.gantt-item.milestone{background:var(--accent-gradient);border-color:transparent;}
 .gantt-item.milestone .period,.gantt-item.milestone .work{color:var(--accent-ink);opacity:.85;}
 .gantt-item.milestone .phase{color:var(--accent-ink);}
 
@@ -295,7 +297,7 @@ table.score tr:last-child td{font-weight:800;border-bottom:none;}
   appearance:none;border:1px solid var(--border);background:var(--surface);color:var(--ink-dim);
   font-family:inherit;font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px;cursor:pointer;
 }
-.chip-btn.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+.chip-btn.active{background:var(--accent-gradient);border-color:transparent;color:#fff;}
 .chip-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .count-tag{font-size:11.5px;color:var(--ink-faint);}
 
@@ -366,7 +368,7 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border);color
 .kpi-row.cols-3{grid-template-columns:repeat(3,1fr);}
 @media (max-width:820px){.kpi-row.cols-3{grid-template-columns:1fr;}}
 .progress-track{height:7px;border-radius:99px;background:var(--muted-soft);overflow:hidden;margin-top:7px;}
-.progress-fill{height:100%;background:var(--accent);border-radius:99px;}
+.progress-fill{height:100%;background:var(--accent-gradient);border-radius:99px;}
 
 /* scenario work-log modal */
 dialog#scenario-modal{
@@ -394,7 +396,7 @@ dialog#scenario-modal::backdrop{background:rgba(10,8,4,.5);}
   appearance:none;border:1px solid var(--border);background:var(--surface);color:var(--ink);
   font-family:inherit;font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer;
 }
-.sbtn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+.sbtn.primary{background:var(--accent-gradient);border-color:transparent;color:#fff;}
 .sbtn.danger{color:var(--warn);border-color:var(--warn);}
 .sbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
@@ -407,7 +409,7 @@ dialog#scenario-modal::backdrop{background:rgba(10,8,4,.5);}
   <div class="topbar">
     <div class="brand">
       <p class="brand-eyebrow">SMZRR STUDIO — AI FILM &amp; SPEC AD</p>
-      <h1>출품 관제탑</h1>
+      <h1>AI 영상 제작 스케줄</h1>
       <p>2027 Hero Film 제작 로드맵 · AI 영화제 데이터베이스 · 2026 출품 리스트를 한 곳에서</p>
     </div>
     <div class="today-chip">📅 오늘 <b id="today-label">—</b></div>
